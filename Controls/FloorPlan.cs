@@ -5,7 +5,7 @@ using System.Drawing.Text;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using AForge.Imaging.Filters;
+using Accord.Imaging.Filters;
 using iSpyApplication.Utilities;
 
 namespace iSpyApplication.Controls
@@ -214,17 +214,7 @@ namespace iSpyApplication.Controls
                                MainClass.EditFloorplan(Fpobject);
                                 break;
                             case 1:
-                                if (Helper.HasFeature(Enums.Features.Access_Media))
-                                {
-                                    string url = MainForm.Webpage;
-                                    if (WsWrapper.WebsiteLive && MainForm.Conf.ServicesEnabled)
-                                    {
-                                        MainForm.OpenUrl(url);
-                                    }
-                                    else
-                                        MainClass.Connect(url, false);
-                                }
-                                break;
+                                throw new NotSupportedException("Website not supported exception");
                         }
                     }
                 }

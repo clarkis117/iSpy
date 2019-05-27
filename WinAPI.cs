@@ -13,15 +13,9 @@ namespace iSpyApplication
         private const int SWP_SHOWWINDOW = 64; // 0x0040
         private static readonly IntPtr HWND_TOP = IntPtr.Zero;
 
-        public static int ScreenX
-        {
-            get { return GetSystemMetrics(SM_CXSCREEN); }
-        }
+        public static int ScreenX => GetSystemMetrics(SM_CXSCREEN);
 
-        public static int ScreenY
-        {
-            get { return GetSystemMetrics(SM_CYSCREEN); }
-        }
+        public static int ScreenY => GetSystemMetrics(SM_CYSCREEN);
 
         [DllImport("user32.dll", EntryPoint = "GetSystemMetrics")]
         public static extern int GetSystemMetrics(int which);

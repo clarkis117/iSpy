@@ -1,12 +1,12 @@
-﻿// AForge Vision Library
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
+﻿// Accord Vision Library
+// Accord.NET framework
+// http://www.Accordnet.com/framework/
 //
 // Copyright © Andrew Kirillov, 2005-2009
-// andrew.kirillov@aforgenet.com
+// andrew.kirillov@Accordnet.com
 //
 
-using AForge.Imaging;
+using Accord.Imaging;
 
 namespace iSpyApplication.Vision
 {

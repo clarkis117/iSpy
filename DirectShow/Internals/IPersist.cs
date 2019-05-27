@@ -1,5 +1,5 @@
-// AForge Direct Show Library
-// AForge.NET framework
+// Accord Direct Show Library
+// Accord.NET framework
 //
 // Copyright © Andrew Kirillov, 2010
 // andrew.kirillov@gmail.com

@@ -20,7 +20,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using iSpyApplication.Cloud;
 using iSpyApplication.Controls;
 using iSpyApplication.Properties;
 using iSpyApplication.Sources.Audio;
@@ -1873,52 +1872,13 @@ namespace iSpyApplication.Server
                     resp = "OK";
                     break;
                 case "uploadyoutube":
-                {
-                    bool b;
-                    resp = YouTubeUploader.Upload(oid, Helper.GetFullPath(otid, oid) + fn, out b) + ",OK";
-                }
-                    break;
+                    throw new NotSupportedException("youtube no longer supported");
                 case "uploadcloud":
-                {
-                    bool b;
-                    resp = CloudGateway.Upload(otid, oid, Helper.GetFullPath(otid, oid) + fn, out b) + ",OK";
-                }
-                    break;
+                    throw new NotSupportedException("Cloud no longer supported");
                 case "kinect_tilt_up":
-                {
-                    var c = MainForm.InstanceReference.GetCameraWindow(oid);
-                    if (c != null)
-                    {
-                        try
-                        {
-                            ((KinectStream) c.Camera.VideoSource).Tilt += 4;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogException(ex, "Server");
-                        }
-                    }
-
-                    resp = "OK";
-                }
-                    break;
+                    throw new NotSupportedException("Kinect Camera no longer supported");
                 case "kinect_tilt_down":
-                {
-                    var c = MainForm.InstanceReference.GetCameraWindow(oid);
-                    if (c != null)
-                    {
-                        try
-                        {
-                            ((KinectStream) c.Camera.VideoSource).Tilt -= 4;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogException(ex, "Server");
-                        }
-                    }
-                    resp = "OK";
-                }
-                    break;
+                    throw new NotSupportedException("Kinect Camera no longer supported");
                 case "removeobject":
                     if (otid == 1)
                     {
@@ -2555,23 +2515,9 @@ namespace iSpyApplication.Server
                             break;
                         case -3:
                         case -4:
-                            cmdlist = PTZController.PelcoCommands.Aggregate(cmdlist,
-                                                                            (current, c) =>
-                                                                            current +
-                                                                            ("<option value=\\\"" + Uri.EscapeDataString(c) + "\\\">" + c +
-                                                                             "</option>"));
-                            break;
+                            throw new NotSupportedException("PELCO no longer supported");
                         case -5:
-                            CameraWindow cw = MainForm.InstanceReference.GetCameraWindow(oid);
-                            if (cw?.PTZ?.ONVIFPresets.Length > 0)
-                            {
-                                cmdlist = cw.PTZ.ONVIFPresets.Aggregate(cmdlist,
-                                    (current, c) =>
-                                        current +
-                                        ("<option value=\\\"" + Uri.EscapeDataString(c.Name) + "\\\">" + c +
-                                         "</option>"));
-                            }
-                            break;
+                            throw new NotSupportedException("ONVIF no longer supported");
                     }
 
                     func = func.Replace("data", "\"" + cmdlist.Trim(',') + "\"");

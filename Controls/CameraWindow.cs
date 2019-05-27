@@ -20,20 +20,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using FFmpeg.AutoGen;
-using iSpyApplication.Cloud;
-using iSpyApplication.Onvif;
-using iSpyApplication.Pelco;
 using iSpyApplication.Realtime;
 using iSpyApplication.Server;
 using iSpyApplication.Sources;
 using iSpyApplication.Sources.Audio;
 using iSpyApplication.Sources.Video;
-using iSpyApplication.Sources.Video.Ximea;
 using iSpyApplication.Utilities;
 using iSpyApplication.Vision;
 using iSpyPRO.DirectShow;
 using iSpyPRO.DirectShow.Internals;
-using xiApi.NET;
 using Encoder = System.Drawing.Imaging.Encoder;
 using Image = System.Drawing.Image;
 
@@ -83,57 +78,6 @@ namespace iSpyApplication.Controls
         }
 
         public int ObjectTypeID => 2;
-
-        private ONVIFDevice _onvifDevice = null;
-        public bool ONVIFConnected
-        {
-            get
-            {
-                return _onvifDevice != null;
-            }
-        }
-        public ONVIFDevice ONVIFDevice
-        {
-            get
-            {
-                if (_onvifDevice != null)
-                    return _onvifDevice;
-
-                try
-                {
-                    var p = Camobject.settings.onvifident.Split('|');
-                    if (p.Length > 1)
-                    {
-                        Camobject.settings.onvifident = p[0];
-                        Helper.NVSet(this, "profilename", p[1]);
-                    }
-
-                    string url = Camobject.settings.onvifident;
-                    string pn = Nv("profilename");
-                    int pi = 0;
-                    int.TryParse(pn, out pi);
-
-                    _onvifDevice = new ONVIFDevice(p[0], Camobject.settings.login,
-                        Camobject.settings.password, Camobject.settings.onvif.rtspport,
-                        Camobject.settings.onvif.timeout);
-
-                    _onvifDevice.SelectProfile(pi);
-
-
-                    return _onvifDevice;
-                }
-                catch(Exception ex)
-                {
-                    Logger.LogException(ex,"Onvif discovery");
-                    _onvifDevice = null;
-                    return null;
-                }
-            }
-            set
-            {
-                _onvifDevice = null;
-            }
-        }
 
         public int ObjectID => Camobject.id;
         
@@ -208,7 +152,6 @@ namespace iSpyApplication.Controls
         }
         public bool ForcedRecording { get; set; }
         public bool NeedMotionZones = true;
-        internal XimeaVideoSource XimeaSource;
         public bool Alerted;
         public double MovementCount;
         public DateTime CalibrateTarget;
@@ -1163,12 +1106,15 @@ namespace iSpyApplication.Controls
                                         if (Helper.HasFeature(Enums.Features.Access_Media))
                                         {
                                             string url = MainForm.Webpage;
+
+                                            /*
                                             if (WsWrapper.WebsiteLive && MainForm.Conf.ServicesEnabled)
                                             {
                                                 MainForm.OpenUrl(url);
                                             }
                                             else
                                                 MainClass.Connect(url, false);
+                                                */
                                         }
                                         break;
                                     case 4:
@@ -2155,11 +2101,13 @@ namespace iSpyApplication.Controls
                         myThumbnail.Save(fullpath, MainForm.Encoder, parameters);
                         myThumbnail.Dispose();
 
+                        /*
                         if (Camobject.settings.cloudprovider.images)
                         {
                             bool b;
                             CloudGateway.Upload(2, Camobject.id, fullpath, out b);
                         }
+                        */
                     }
                 }
 
@@ -3400,10 +3348,12 @@ namespace iSpyApplication.Controls
                             MainForm.MasterFileAdd(new FilePreview(fn, dSeconds, Camobject.name, DateTime.Now.Ticks, 2,
                                 Camobject.id, ff.MaxAlarm, false, false));
                             MainForm.NeedsMediaRefresh = Helper.Now;
+                            /*
                             if (Camobject.settings.cloudprovider.recordings)
                             {
                                 CloudGateway.Upload(2, Camobject.id, path + CodecExtension);
                             }
+                            */
                             if (Camobject.recorder.ftpenabled)
                             {
                                 FtpRecording(path + CodecExtension);
@@ -3581,11 +3531,7 @@ namespace iSpyApplication.Controls
                     var s = sender as string;
                     if (s != null)
                         msg = s;
-                    else
-                    {
-                        if (sender is KinectStream)
-                            msg = "Trip Wire";
-                    }
+
                     DoAlert("alert", msg);
                 }
             }
@@ -4014,11 +3960,12 @@ namespace iSpyApplication.Controls
 
                                 message += MainForm.Conf.AppendLinkText;
 
-
+                                /*
                                 if (includeGrab && rawgrab!=null)
                                     WsWrapper.SendAlertWithImage(param1, subject, message, rawgrab);
                                 else
                                     WsWrapper.SendAlert(param1, subject, message);
+                                    */
                             }
 
                         }
@@ -4031,7 +3978,7 @@ namespace iSpyApplication.Controls
                                 if (message.Length > 160)
                                     message = message.Substring(0, 159);
 
-                                WsWrapper.SendSms(param1, message);
+                                //WsWrapper.SendSms(param1, message);
                             }
                         }
                         break;
@@ -4043,7 +3990,7 @@ namespace iSpyApplication.Controls
                                 if (message.Length > 160)
                                     message = message.Substring(0, 159);
 
-                                WsWrapper.SendTweet(message + " " + MainForm.Webserver + "/mobile/");
+                               // WsWrapper.SendTweet(message + " " + MainForm.Webserver + "/mobile/");
                             }
                         }
                         break;
@@ -4063,7 +4010,6 @@ namespace iSpyApplication.Controls
 
         private void VideoDeviceVideoFinished(object sender, PlayingFinishedEventArgs e)
         {
-            _onvifDevice = null;
             switch (e.ReasonToFinishPlaying)
             {
                 case ReasonToFinishPlaying.DeviceLost:
@@ -4187,19 +4133,6 @@ namespace iSpyApplication.Controls
                             }
                         }
 
-                        var source = Camera.VideoSource as KinectStream;
-                        if (source != null)
-                        {
-                            source.TripWire -= Alert;
-                        }
-
-                        var source1 = Camera.VideoSource as KinectNetworkStream;
-                        if (source1 != null)
-                        {
-                            //remove the alert handler from the source stream
-                            source1.AlertHandler -= CameraWindow_AlertHandler;
-                        }
-
                         var audiostream = Camera.VideoSource as ISupportsAudio;
                         if (audiostream != null)
                         {
@@ -4225,10 +4158,6 @@ namespace iSpyApplication.Controls
                                 }
                             }
 
-                            if (Camera.VideoSource is XimeaVideoSource)
-                            {
-                                XimeaSource = null;
-                            }
                         }
                         else
                         {
@@ -4387,14 +4316,8 @@ namespace iSpyApplication.Controls
             get
             {
                 if (!string.IsNullOrEmpty(_sourceOverload))
-                {
-                    switch(_sourceOverload)
-                    {
-                        case "onvif":
-                            return ONVIFDevice?.StreamEndpoint?.Uri?.Uri.ToString();
-                    }
                     return _sourceOverload;
-                }
+            
                 return Camobject.settings.videosourcestring;
             }
         }
@@ -4416,7 +4339,6 @@ namespace iSpyApplication.Controls
                 IsEnabled = true;
             }
             _enabling = true;
-            _onvifDevice = null;
             _sourceOverload = null;
             try
             {
@@ -4453,31 +4375,11 @@ namespace iSpyApplication.Controls
                         OpenVideoSource(vlcSource, true);
                         break;
                     case 6:
-                        if (XimeaSource == null || !XimeaSource.IsRunning)
-                            XimeaSource =
-                                new XimeaVideoSource(this);
-                        OpenVideoSource(XimeaSource, true);
-                        break;
+                        throw new NotSupportedException("Ximea camera is no longer supported");
                     case 7:
-                        var ks = new KinectStream(this);                            
-                        OpenVideoSource(ks, true);                        
-                        break;
+                        throw new NotSupportedException("Kinect camera is no longer supported");
                     case 8:
-                        switch (Nv(Camobject.settings.namevaluesettings, "custom"))
-                        {
-                            case "Network Kinect":
-                                // open the network kinect video stream
-                                OpenVideoSource(new KinectNetworkStream(this), true);
-                                break;
-                            default:
-                                lock (_lockobject)
-                                {
-                                    IsEnabled = false;
-                                }
-                                throw new Exception("No custom provider found for " +
-                                                    Nv(Camobject.settings.namevaluesettings, "custom"));
-                        }
-                        break;
+                        throw new NotSupportedException("Kinect camera is no longer supported");
                     case 9:
                         _sourceOverload = "onvif";
                         
@@ -4607,34 +4509,6 @@ namespace iSpyApplication.Controls
                         Calibrating = true;
                         _lastRun = Helper.Now.Ticks;
                         Camera.Start();
-                    }
-                    if (Camera.VideoSource is XimeaVideoSource)
-                    {
-                        //need to set these after the camera starts
-                        try
-                        {
-                            XimeaSource.SetParam(PRM.IMAGE_DATA_FORMAT, IMG_FORMAT.RGB24);
-                        }
-                        catch (ApplicationException)
-                        {
-                            XimeaSource.SetParam(PRM.IMAGE_DATA_FORMAT, IMG_FORMAT.MONO8);
-                        }
-                        XimeaSource.SetParam(CameraParameter.OffsetX,
-                            Convert.ToInt32(Nv(Camobject.settings.namevaluesettings, "x")));
-                        XimeaSource.SetParam(CameraParameter.OffsetY,
-                            Convert.ToInt32(Nv(Camobject.settings.namevaluesettings, "y")));
-                        float gain;
-                        float.TryParse(Nv(Camobject.settings.namevaluesettings, "gain"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out gain);
-                        XimeaSource.SetParam(CameraParameter.Gain, gain);
-                        float exp;
-                        float.TryParse(Nv(Camobject.settings.namevaluesettings, "exposure"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out exp);
-                        XimeaSource.SetParam(CameraParameter.Exposure, exp*1000);
-                        XimeaSource.SetParam(CameraParameter.Downsampling,
-                            Convert.ToInt32(Nv(Camobject.settings.namevaluesettings, "downsampling")));
-                        XimeaSource.SetParam(CameraParameter.Width,
-                            Convert.ToInt32(Nv(Camobject.settings.namevaluesettings, "width")));
-                        XimeaSource.SetParam(CameraParameter.Height,
-                            Convert.ToInt32(Nv(Camobject.settings.namevaluesettings, "height")));
                     }
                     Camera.UpdateResources();
                 }
@@ -5026,20 +4900,6 @@ namespace iSpyApplication.Controls
                     Camobject.settings.vlcWidth = 640;
                     Camobject.settings.vlcHeight = 480;
                 }
-            }
-
-            var kinectStream = source as KinectStream;
-            if (kinectStream != null)
-            {
-                kinectStream.InitTripWires(Camobject.alerts.pluginconfig);
-                kinectStream.TripWire += Alert;
-            }
-
-            var kinectNetworkStream = source as KinectNetworkStream;
-            if (kinectNetworkStream != null)
-            {
-                //add the camera alert handler hook to the provider
-                kinectNetworkStream.AlertHandler += CameraWindow_AlertHandler;
             }
 
             var audiostream = source as ISupportsAudio;

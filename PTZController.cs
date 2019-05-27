@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using iSpyApplication.Controls;
-using iSpyApplication.OnvifServices;
-using iSpyApplication.Pelco;
 using iSpyApplication.Sources.Video;
 using iSpyApplication.Utilities;
 using iSpyPRO.DirectShow;
@@ -21,6 +19,8 @@ namespace iSpyApplication
     public class PTZController
     {
         readonly ConnectionFactory _connectionFactory = new ConnectionFactory();
+
+        /*
         public static string[] PelcoCommands =
                                              {
                                                  "Focus Near", "Focus Far", "Open Iris", "Close Iris", "Switch On",
@@ -34,12 +34,12 @@ namespace iSpyApplication
                                                  "Stop Zone 2", "Start Zone 3", "Stop Zone 3", "Start Zone 4",
                                                  "Stop Zone 4", "Start Zone 5", "Stop Zone 5", "Start Zone 6",
                                                  "Stop Zone 6", "Start Zone Scan", "Stop Zone Scan"
-                                             };
+                                             };   */
 
         private readonly CameraWindow _cameraControl;
         private Enums.PtzCommand _previousCommand;
         private SerialPort _serialPort;
-        private Enums.PtzCommand _lastCommand = Enums.PtzCommand.Stop;
+        private readonly Enums.PtzCommand _lastCommand = Enums.PtzCommand.Stop;
 
         public void CheckSendStop()
         {
@@ -121,6 +121,7 @@ namespace iSpyApplication
 
         public void AddPreset(string name, string presetToken)
         {
+            /*
             try
             {
                 if (PTZToken != null)
@@ -137,10 +138,12 @@ namespace iSpyApplication
             {
                 Logger.LogException(ex);
             }
+            */
         }
 
         public void DeletePreset(string presetToken)
         {
+            /*
             try
             {
                 if (PTZToken != null)
@@ -156,6 +159,7 @@ namespace iSpyApplication
             {
                 Logger.LogException(ex);
             }
+            */
         }
 
         public void ResetONVIF()
@@ -248,13 +252,13 @@ namespace iSpyApplication
                         ProcessIAM(cmd);
                         return;
                     case -3://PELCO-P
-                        ProcessPelco(cmd, true);
+                        //ProcessPelco(cmd, true);
                         return;
                     case -4://PELCO-D
-                        ProcessPelco(cmd, false);
+                        //ProcessPelco(cmd, false);
                         return;
                     case -5://ONVIF
-                        ProcessOnvif(cmd);
+                        //ProcessOnvif(cmd);
                         break;
                     case -6:
                         //none - ignore
@@ -443,7 +447,7 @@ namespace iSpyApplication
                             SendPTZDirection(-Math.PI / 4);
                             break;
                         default:
-                            ProcessPelco(command, true);
+                            //ProcessPelco(command, true);
                             break;
                     }
                     return;
@@ -476,7 +480,7 @@ namespace iSpyApplication
                             SendPTZDirection(-Math.PI / 4);
                             break;
                         default:
-                            ProcessPelco(command, false);
+                            //ProcessPelco(command, false);
                             break;
                     }
                     return;
@@ -509,7 +513,7 @@ namespace iSpyApplication
                             SendPTZDirection(-Math.PI / 4);
                             break;
                         default:
-                            ProcessOnvif(command);
+                            //ProcessOnvif(command);
                             break;
                     }
                     return;
@@ -749,6 +753,7 @@ namespace iSpyApplication
 
         }
 
+        /*
         private Enums.PtzCommand _lastOnvifCommand = Enums.PtzCommand.Center;
         private DateTime _lastOnvifCommandSent = DateTime.MinValue;
 
@@ -827,8 +832,9 @@ namespace iSpyApplication
                     Logger.LogException(ex);
                 }
             }
-        }
+        }*/
 
+        /*
         void ProcessOnvifCommand(string ptzToken)
         {
             if (PTZToken != null)
@@ -848,8 +854,9 @@ namespace iSpyApplication
                 }
 
             }
-        }
+        }*/
 
+        /*
         private string PTZToken
         {
             get {
@@ -858,7 +865,9 @@ namespace iSpyApplication
                 return _cameraControl?.ONVIFDevice?.Profile?.token;
             }
         }
+        */
 
+        /*
         public PTZPreset[] ONVIFPresets
         {
             get
@@ -882,7 +891,9 @@ namespace iSpyApplication
                 return new PTZPreset[] { };
             }
         }
+        */
 
+        /*
         void ProcessPelco(Enums.PtzCommand command, bool usePelcoP)
         {
             //PELCO
@@ -1012,7 +1023,9 @@ namespace iSpyApplication
             _serialPort.Dispose();
             _serialPort = null;
         }
+        */
 
+        /*
         void ProcessPelcoCommand(string command, bool usePelcoP)
         {
             //PELCO
@@ -1330,6 +1343,7 @@ namespace iSpyApplication
             _serialPort.Dispose();
             _serialPort = null;
         }
+        */
 
         void SendPelco(byte[] arr)
         {
@@ -1349,13 +1363,13 @@ namespace iSpyApplication
                 case -2://IAM
                     return;
                 case -3://PELCO-P
-                    ProcessPelcoCommand(cmd, true);
+                    //ProcessPelcoCommand(cmd, true);
                     return;
                 case -4://PELCO-D
-                    ProcessPelcoCommand(cmd, false);
+                    //ProcessPelcoCommand(cmd, false);
                     return;
                 case -5://ONVIF
-                    ProcessOnvifCommand(cmd);
+                    //ProcessOnvifCommand(cmd);
                     return;
                 case -6://NONE
                     return;

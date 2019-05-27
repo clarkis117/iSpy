@@ -1,5 +1,5 @@
-﻿// AForge Video Library
-// AForge.NET framework
+﻿// Accord Video Library
+// Accord.NET framework
 //
 // Copyright © Andrew Kirillov, 2007-2008
 // andrew.kirillov@gmail.com

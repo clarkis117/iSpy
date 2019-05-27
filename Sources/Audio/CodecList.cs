@@ -19,10 +19,7 @@ namespace iSpyApplication.Sources.Audio
                                   new Gsm610ChatCodec(),
                                   new MicrosoftAdpcmChatCodec(),
                                   new MuLawChatCodec(),
-                                  new NarrowBandSpeexCodec(),
                                   new TrueSpeechChatCodec(),
-                                  new UltraWideBandSpeexCodec(),
-                                  new WideBandSpeexCodec(),
                                   new UncompressedPcmChatCodec()
                               };
 

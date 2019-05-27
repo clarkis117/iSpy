@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using iSpyApplication.Onvif;
 using iSpyApplication.Server;
 using iSpyApplication.Utilities;
 
@@ -62,48 +61,6 @@ namespace iSpyApplication.CameraDiscovery
             model = (model ?? "").ToLowerInvariant();
             //find http port
             _discoverer = new URLDiscovery(Uri);
-
-            //check for onvif support first
-            int i = 0;
-            try
-            {
-                var httpUri = _discoverer.BaseUri.SetPort(_discoverer.HttpPort);
-
-                //check for this devices 
-                foreach (var d in Discovery.DiscoveredDevices)
-                {
-                    if (d.DnsSafeHost == Uri.DnsSafeHost)
-                    {
-                        httpUri = _discoverer.BaseUri.SetPort(d.Port);
-                        break;
-                    }
-                }
-
-                var onvifurl = httpUri + "onvif/device_service";
-                var dev = new ONVIFDevice(onvifurl, Username, Password,0,8);
-                if (dev.Profiles != null)
-                {
-                    foreach (var p in dev.Profiles)
-                    {
-                        var b = p?.VideoEncoderConfiguration?.Resolution;
-                        if (b != null && b.Width > 0)
-                        {
-                            dev.SelectProfile(i);
-                            var co = new ConnectionOption(onvifurl, null, 9, -1, null)
-                            {
-                                MediaIndex = i
-                            };
-                            URLFound?.Invoke(this,
-                                new ConnectionOptionEventArgs(co));
-                        }
-                        i++;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex);
-            }
 
             foreach (var m in mm)
             {

@@ -1,9 +1,9 @@
-﻿// AForge Direct Show Library
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
+﻿// Accord Direct Show Library
+// Accord.NET framework
+// http://www.Accordnet.com/framework/
 //
-// Copyright © AForge.NET, 2009-2011
-// contacts@aforgenet.com
+// Copyright © Accord.NET, 2009-2011
+// contacts@Accordnet.com
 //
 
 namespace iSpyPRO.DirectShow.Internals

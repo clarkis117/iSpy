@@ -1,15 +1,15 @@
-﻿// AForge Vision Library
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
+﻿// Accord Vision Library
+// Accord.NET framework
+// http://www.Accordnet.com/framework/
 //
-// Copyright © AForge.NET, 2005-2011
-// contacts@aforgenet.com
+// Copyright © Accord.NET, 2005-2011
+// contacts@Accordnet.com
 //
 
 using System.Drawing;
 using System.Drawing.Imaging;
-using AForge;
-using AForge.Imaging;
+using Accord;
+using Accord.Imaging;
 
 namespace iSpyApplication.Vision
 {
@@ -22,7 +22,7 @@ namespace iSpyApplication.Vision
     /// <see cref="IMotionProcessing">motion processing</see> algorithms, allowing to call them with
     /// single call. Unlike motion detection and motion processing interfaces, the class also
     /// provides additional methods for convenience, so the algorithms could be applied not
-    /// only to <see cref="AForge.Imaging.UnmanagedImage"/>, but to .NET's <see cref="Bitmap"/> class
+    /// only to <see cref="Accord.Imaging.UnmanagedImage"/>, but to .NET's <see cref="Bitmap"/> class
     /// as well.</para>
     /// 
     /// <para>In addition to wrapping of motion detection and processing algorthms, the class provides

@@ -254,7 +254,7 @@ namespace iSpyApplication.Controls
             _filelist = new List<FilesFile>();
             lock (_lockobject)
             {
-                var dirinfo = new DirectoryInfo(Dir.Entry + "audio\\" + Micobject.directory + "\\");
+                var dirinfo = new DirectoryInfo($"{Dir.Entry}audio{Path.DirectorySeparatorChar}{Micobject.directory}{Path.DirectorySeparatorChar}");
 
                 var lFi = new List<FileInfo>();
                 lFi.AddRange(dirinfo.GetFiles());
@@ -750,17 +750,7 @@ namespace iSpyApplication.Controls
                                 }
                                 break;
                             case 3:
-                                if (Helper.HasFeature(Enums.Features.Access_Media))
-                                {
-                                    string url = MainForm.Webpage;
-                                    if (WsWrapper.WebsiteLive && MainForm.Conf.ServicesEnabled)
-                                    {
-                                        MainForm.OpenUrl(url);
-                                    }
-                                    else
-                                        MainClass.Connect(url, false);
-                                }
-                                break;
+                                throw new NotSupportedException("Website not supported exception");
                             case 4:
                                 if (IsEnabled)
                                 {
@@ -2191,7 +2181,7 @@ namespace iSpyApplication.Controls
             Detect(sender, EventArgs.Empty);
         }
 
-        public static WaveFormat AudioStreamFormat = new WaveFormat(22050, 16, 1);
+        public static readonly WaveFormat AudioStreamFormat = new WaveFormat(22050, 16, 1);
 
         public void AudioDeviceDataAvailable(object sender, DataAvailableEventArgs e)
         {
@@ -2567,7 +2557,7 @@ namespace iSpyApplication.Controls
 
                                 message += MainForm.Conf.AppendLinkText;
 
-                                WsWrapper.SendAlert(param1, subject, message);
+                                //WsWrapper.SendAlert(param1, subject, message);
                             }
                         }
                         break;
@@ -2579,7 +2569,7 @@ namespace iSpyApplication.Controls
                                 if (message.Length > 160)
                                     message = message.Substring(0, 159);
 
-                                WsWrapper.SendSms(param1, message);
+                                //WsWrapper.SendSms(param1, message);
                             }
                         }
                         break;
@@ -2591,7 +2581,7 @@ namespace iSpyApplication.Controls
                                 if (message.Length > 160)
                                     message = message.Substring(0, 159);
 
-                                WsWrapper.SendTweet(message + " " + MainForm.Webserver + "/mobile/");
+                                //WsWrapper.SendTweet(message + " " + MainForm.Webserver + "/mobile/");
                             }
                         }
                         break;
@@ -2709,13 +2699,12 @@ namespace iSpyApplication.Controls
             {
                 StartSaving();
             }
+
             if (sender is IAudioSource)
             {
                 FlashCounter = Helper.Now.AddSeconds(10);
                 SoundDetected = true;
-                return;
             }
-            
         }
 
         public void Alert(object sender, EventArgs e)

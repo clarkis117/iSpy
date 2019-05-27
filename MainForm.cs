@@ -18,10 +18,8 @@ using System.Timers;
 using System.Windows.Forms;
 using Antiufo.Controls;
 using FFmpeg.AutoGen;
-using iSpyApplication.Cloud;
 using iSpyApplication.Controls;
 using iSpyApplication.Joystick;
-using iSpyApplication.Onvif;
 using iSpyApplication.Properties;
 using iSpyApplication.Server;
 using iSpyApplication.Sources;
@@ -570,16 +568,8 @@ namespace iSpyApplication
             {
                 _mIcp = null;
             }
-            InstanceReference = this;
 
-            try
-            {
-                Discovery.FindDevices();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex);
-            }
+            InstanceReference = this;
         }
 
         public static DateTime NeedsMediaRefresh
@@ -651,6 +641,7 @@ namespace iSpyApplication
 
         public void ConnectivityChanged(NLM_CONNECTIVITY newConnectivity)
         {
+            /*
             var i = (int) newConnectivity;
             if (!WsWrapper.WebsiteLive)
             {
@@ -666,6 +657,7 @@ namespace iSpyApplication
                     }
                 }
             }
+            */
         }
 
         public static void MasterFileAdd(FilePreview fp)
@@ -1047,7 +1039,7 @@ namespace iSpyApplication
 #if DEBUG
             MWS.ServerRoot = Program.AppPath + @"WebServerRoot\";
 #endif
-
+            /* removed because source is not included
             if (Conf.Monitor)
             {
                 Process[] w = Process.GetProcessesByName("ispymonitor");
@@ -1063,7 +1055,7 @@ namespace iSpyApplication
                         // ignored
                     }
                 }
-            }
+            }*/
 
             SetBackground();
 
@@ -1533,7 +1525,7 @@ namespace iSpyApplication
                             }
                             MWS.StopServer();
                             MWS.StartServer();
-                            WsWrapper.ForceSync();
+                            //WsWrapper.ForceSync();
                             break;
                         case "IPv6":
                             _ipv6Addresses = null;
@@ -1888,9 +1880,9 @@ namespace iSpyApplication
                 }
                 else
                 {
-                    if (WsWrapper.WebsiteLive)
+                    if (true)
                     {
-                        if (Conf.ServicesEnabled && !WsWrapper.LoginFailed)
+                        if (Conf.ServicesEnabled)
                         {
                             _tsslStats.Text = LocRm.GetString("Online");
                             if (LoopBack && Conf.Subscribed)
@@ -1914,6 +1906,7 @@ namespace iSpyApplication
                     }
                 }
 
+                /*
                 if (Conf.ServicesEnabled && !WsWrapper.LoginFailed)
                 {
                     if (NeedsSync)
@@ -1922,7 +1915,7 @@ namespace iSpyApplication
                     }
                     WsWrapper.PingServer();
                 }
-
+                */
 
                 _storageCounter++;
                 if (_storageCounter == 3600) // every hour
@@ -2250,40 +2243,7 @@ namespace iSpyApplication
 
         private void DoUpdateCheck(bool suppressMessages)
         {
-            string version = "";
-            try
-            {
-                version = WsWrapper.ProductLatestVersion(ProductID);
-                if (version == LocRm.GetString("iSpyDown"))
-                {
-                    throw new Exception("down");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex);
-                if (!suppressMessages)
-                {
-                    UISync.Execute(() => MessageBox.Show(LocRm.GetString("CheckUpdateError"), LocRm.GetString("Error")));
-                }
-            }
-            if (version != "" && version != LocRm.GetString("iSpyDown"))
-            {
-                var verThis = new Version(Application.ProductVersion);
-                var verLatest = new Version(version);
-                if (verThis < verLatest)
-                {
-                    UISync.Execute(ShowNewVersion);
-                }
-                else
-                {
-                    if (!suppressMessages)
-                        UISync.Execute(
-                            () =>
-                                MessageBox.Show(LocRm.GetString("HaveLatest"), LocRm.GetString("Note"),
-                                    MessageBoxButtons.OK));
-                }
-            }
+            //converted to noop
         }
 
         private void ShowNewVersion()
@@ -2493,7 +2453,7 @@ namespace iSpyApplication
             }
 
             _shuttingDown = true;
-            WsWrapper.Disconnect();
+            //WsWrapper.Disconnect();
             try
             {
                 MWS.StopServer();
@@ -2639,6 +2599,7 @@ namespace iSpyApplication
 
         internal void ConnectServices(bool checkforUpdates = true)
         {
+            /*
             if (Conf.ServicesEnabled)
             {
                 if (Conf.UseUPNP)
@@ -2678,6 +2639,7 @@ namespace iSpyApplication
                 UISync.Execute(() => CheckForUpdates(true));
             }
             SilentStartup = false;
+            */
         }
 
 
@@ -3010,40 +2972,7 @@ namespace iSpyApplication
 
         private void ToolStripMenuItem1Click(object sender, EventArgs e)
         {
-            if (ContextTarget is CameraWindow)
-            {
-                //id = ((CameraWindow) ContextTarget).Camobject.id.ToString();
-                string url = Webpage;
-                if (WsWrapper.WebsiteLive && Conf.ServicesEnabled)
-                {
-                    OpenUrl(url);
-                }
-                else
-                    Connect(url, false);
-            }
-
-            if (ContextTarget is VolumeLevel)
-            {
-                //id = ((VolumeLevel) ContextTarget).Micobject.id.ToString();
-                string url = Webpage;
-                if (WsWrapper.WebsiteLive && Conf.ServicesEnabled)
-                {
-                    OpenUrl(url);
-                }
-                else
-                    Connect(url, false);
-            }
-
-            if (ContextTarget is FloorPlanControl)
-            {
-                string url = Webpage;
-                if (WsWrapper.WebsiteLive && Conf.ServicesEnabled)
-                {
-                    OpenUrl(url);
-                }
-                else
-                    Connect(url, false);
-            }
+            //converted to noop
         }
 
         public void Connect(bool silent)
@@ -3063,6 +2992,8 @@ namespace iSpyApplication
                     return;
                 }
             }
+
+            /*
             if (WsWrapper.WebsiteLive)
             {
                 if (Conf.WSUsername != null && Conf.WSUsername.Trim() != "")
@@ -3099,6 +3030,7 @@ namespace iSpyApplication
             {
                 Logger.LogMessage(LocRm.GetString("WebsiteDown"));
             }
+            */
         }
 
         private void MenuItem7Click(object sender, EventArgs e)
@@ -3295,12 +3227,7 @@ namespace iSpyApplication
 
         private void ViewMobile()
         {
-            if (WsWrapper.WebsiteLive && Conf.ServicesEnabled)
-            {
-                OpenUrl(Webserver + "/mobile/");
-            }
-            else
-                WebConnect();
+            //converted to noop
         }
 
         private void AddFloorPlanToolStripMenuItemClick(object sender, EventArgs e)
@@ -3404,12 +3331,7 @@ namespace iSpyApplication
 
         private void ThruWebsiteToolStripMenuItemClick(object sender, EventArgs e)
         {
-            if (WsWrapper.WebsiteLive && Conf.ServicesEnabled)
-            {
-                OpenUrl(Webpage);
-            }
-            else
-                WebConnect();
+            //converted to noop
         }
 
         private void OnMobileDevicesToolStripMenuItemClick(object sender, EventArgs e)
@@ -4350,32 +4272,7 @@ namespace iSpyApplication
 
         private void _tsslStats_Click(object sender, EventArgs e)
         {
-            if (!MWS.Running)
-            {
-                ShowLogFile();
-            }
-            else
-            {
-                
-                if (WsWrapper.WebsiteLive && !WsWrapper.LoginFailed && !string.IsNullOrEmpty(Conf.WSUsername))
-                {
-                    if (Conf.ServicesEnabled)
-                    {
-                        OpenUrl(!Conf.Subscribed
-                            ? Webserver + "/subscribe.aspx"
-                            : Webpage);
-                    }
-                    else
-                    {
-                        OpenUrl(Webserver);
-                    }
-                }
-                else
-                {
-                    WebConnect();
-                }
-                
-            }
+            //converted to noop
         }
 
         private void UnlockLayout()
@@ -6453,20 +6350,6 @@ namespace iSpyApplication
             this.showInFolderToolStripMenuItem.Text = "Show in Folder";
             this.showInFolderToolStripMenuItem.Click += new System.EventHandler(this.showInFolderToolStripMenuItem_Click);
             // 
-            // uploadToYouTubePublicToolStripMenuItem
-            // 
-            this.uploadToYouTubePublicToolStripMenuItem.Name = "uploadToYouTubePublicToolStripMenuItem";
-            this.uploadToYouTubePublicToolStripMenuItem.Size = new System.Drawing.Size(218, 24);
-            this.uploadToYouTubePublicToolStripMenuItem.Text = "Upload to YouTube";
-            this.uploadToYouTubePublicToolStripMenuItem.Click += new System.EventHandler(this.uploadToYouTubePublicToolStripMenuItem_Click);
-            // 
-            // uploadToCloudToolStripMenuItem
-            // 
-            this.uploadToCloudToolStripMenuItem.Name = "uploadToCloudToolStripMenuItem";
-            this.uploadToCloudToolStripMenuItem.Size = new System.Drawing.Size(218, 24);
-            this.uploadToCloudToolStripMenuItem.Text = "Upload to Cloud";
-            this.uploadToCloudToolStripMenuItem.Click += new System.EventHandler(this.uploadToGoogleDriveToolStripMenuItem_Click);
-            // 
             // archiveToolStripMenuItem
             // 
             this.archiveToolStripMenuItem.Name = "archiveToolStripMenuItem";
@@ -6684,33 +6567,9 @@ namespace iSpyApplication
 
         }
 
-        private void uploadToGoogleDriveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MediaUploadCloud();            
-        }
-
         private void ctxtPlayer_Opening(object sender, CancelEventArgs e)
         {
 
-        }
-
-        private void uploadToYouTubePublicToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string msg = "";
-            lock (ThreadLock)
-            {
-                for (int i = 0; i < flowPreview.Controls.Count; i++)
-                {
-                    var pb = flowPreview.Controls[i] as PreviewBox;
-                    if (pb != null && pb.Selected)
-                    {
-                        bool b;
-                        msg = YouTubeUploader.Upload(pb.Oid, pb.FileName, out b);
-                    }
-                }                
-            }
-            if (msg != "")
-                MessageBox.Show(this, msg);
         }
 
         private void mediaPanelControl1_Load(object sender, EventArgs e)

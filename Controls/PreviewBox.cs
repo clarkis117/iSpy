@@ -202,31 +202,18 @@ namespace iSpyApplication.Controls
 
             string[] parts = FileName.Split('\\');
             string fn = parts[parts.Length - 1];
+
+            /*
             if (mode== Enums.PlaybackMode.Website && (WsWrapper.LoginFailed || WsWrapper.Expired))
             {
                 mode = Enums.PlaybackMode.Default;
             }
+            */
 
             switch (mode)
             {
                 case Enums.PlaybackMode.Website:
-                    string url = MainForm.Webserver + "/MediaViewer.aspx?oid=" + Oid + "&ot="+ Otid + "&fn=" + fn + "&port=" + MainForm.Conf.ServerPort;
-                    if (WsWrapper.WebsiteLive && MainForm.Conf.ServicesEnabled)
-                    {
-                        MainForm.OpenUrl(url);
-                    }
-                    else
-                    {
-                        if (!WsWrapper.WebsiteLive)
-                        {
-                            MessageBox.Show(this, LocRm.GetString("iSpyDown"));
-                        }
-                        else
-                        {
-                            MainForm.InstanceReference.Connect(url, false);
-                        }
-                    }
-                    break;
+                    throw new NotSupportedException("Website not supported exception");
                 case Enums.PlaybackMode.iSpy:
                     try
                     {

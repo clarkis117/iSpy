@@ -32,18 +32,9 @@ namespace iSpyApplication
 
         private static void AddCameraToDatabase(string type, string model, string prefix, string source, string url, string cookies, string flags, int port)
         {
-            try
-            {
-                var r = new Reporting.Reporting { Timeout = 8000 };
-                r.AddCamera2(type, model, prefix, source, url, cookies, flags, port);
-                r.Dispose();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex);
 
-            }
         }
+
         private HashSet<string> _hashdata;
         private void LoadSources()
         {

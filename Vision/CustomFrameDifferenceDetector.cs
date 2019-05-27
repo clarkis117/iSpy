@@ -1,16 +1,16 @@
-﻿// AForge Vision Library
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
+﻿// Accord Vision Library
+// Accord.NET framework
+// http://www.Accordnet.com/framework/
 //
-// Copyright © AForge.NET, 2005-2011
-// contacts@aforgenet.com
+// Copyright © Accord.NET, 2005-2011
+// contacts@Accordnet.com
 //
 
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 
 namespace iSpyApplication.Vision
 {
@@ -86,7 +86,7 @@ namespace iSpyApplication.Vision
         // binary erosion filter
         private readonly BinaryErosion3x3 _erosionFilter = new BinaryErosion3x3( );
         // binary dilatation filter
-        private readonly BinaryDilatation3x3 _dilatationFilter = new BinaryDilatation3x3( );
+        private readonly BinaryDilation3x3 _dilatationFilter = new BinaryDilation3x3( );
 
         // dummy object to lock for synchronization
         private readonly object _sync = new object( );
@@ -324,12 +324,12 @@ namespace iSpyApplication.Vision
                 if ( _suppressNoise )
                 {
                     // suppress noise and calculate motion amount
-                    AForge.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _frameSize );
+                    Accord.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _frameSize );
                     _erosionFilter.Apply( _tempFrame, _motionFrame );
 
                     if ( _keepObjectEdges )
                     {
-                        AForge.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _frameSize );
+                        Accord.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _frameSize );
                         _dilatationFilter.Apply( _tempFrame, _motionFrame );
                     }
                 }

@@ -7,18 +7,16 @@ namespace iSpyApplication
 {
     class X509
     {
-        private static X509Certificate _sslCertificate;
+        public static X509Certificate SslCertificate { get; private set; }
 
-        public static X509Certificate SslCertificate => _sslCertificate;
-
-        public static bool SslEnabled => MainForm.Conf.SSLEnabled && _sslCertificate != null;
+        public static bool SslEnabled => MainForm.Conf.SSLEnabled && SslCertificate != null;
 
         public static string LoadCertificate(string fileName)
         {
             try
             {
-                _sslCertificate = X509Certificate.CreateFromCertFile(fileName);
-                Logger.LogMessage("Loaded SSL Certificate: " + _sslCertificate.ToString(false));
+                SslCertificate = X509Certificate.CreateFromCertFile(fileName);
+                Logger.LogMessage("Loaded SSL Certificate: " + SslCertificate.ToString(false));
                 return "OK";
             }
             catch (Exception ex)

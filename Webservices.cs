@@ -73,7 +73,7 @@ namespace iSpyApplication
                 return;
             }
 
-            if (!String.IsNullOrWhiteSpace(txtUsername.Text.Trim()))
+            if (!string.IsNullOrWhiteSpace(txtUsername.Text.Trim()))
             {
                 try
                 {
@@ -123,7 +123,7 @@ namespace iSpyApplication
                 bool failed = false;
 
 
-                var result = WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, true);
+                var result = new string[] { "OK" }; // WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, true);
                 if (result[0] != "OK")
                 {
                     MessageBox.Show(result[0], LocRm.GetString("Error"));
@@ -153,7 +153,7 @@ namespace iSpyApplication
                                     }
                                     else
                                     {
-                                        result = WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, true);
+                                        //converted to noop result = WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, true);
                                     }
                                 }  
                             }

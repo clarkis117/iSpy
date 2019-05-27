@@ -14,8 +14,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using iSpyApplication.Controls;
-using iSpyApplication.Onvif;
-using iSpyApplication.Pelco;
 using iSpyApplication.Server;
 using iSpyApplication.Utilities;
 using CameraScanner = iSpyApplication.CameraDiscovery.CameraScanner;
@@ -53,7 +51,7 @@ namespace iSpyApplication
             RenderResources();
         }
 
-        private class UISync
+        private static class UISync
         {
             private static ISynchronizeInvoke _sync;
 
@@ -584,7 +582,7 @@ namespace iSpyApplication
 
         }
 
-        
+        /*
         private void AddONVIF(string addr, ConnectionOption co)
         {
             string st = "ONVIF: "+addr;
@@ -593,6 +591,7 @@ namespace iSpyApplication
             UISync.Execute(() => pnlOptions.Controls.Add(rb));
 
         }
+        */
 
         private void AddCamera(ConnectionOption e)
         {
@@ -864,7 +863,7 @@ namespace iSpyApplication
         }
 
 
-        public class LastConfig
+        public static class LastConfig
         {
             public static bool PromptSave = false;
             public static string Iptype;

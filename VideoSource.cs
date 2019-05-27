@@ -12,12 +12,9 @@ using Declarations.Media;
 using Declarations.Players;
 using Implementation;
 using iSpyApplication.Controls;
-using iSpyApplication.Onvif;
 using iSpyApplication.Sources.Video;
-using iSpyApplication.Sources.Video.Ximea;
 using iSpyApplication.Utilities;
 using iSpyPRO.DirectShow;
-using Microsoft.Kinect;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace iSpyApplication
@@ -240,7 +237,7 @@ namespace iSpyApplication
                     break;
                 case 10:
                     int id;
-                    if (Int32.TryParse(VideoSourceString, out id))
+                    if (int.TryParse(VideoSourceString, out id))
                     {
                         foreach (MainForm.ListItem li in ddlCloneCamera.Items)
                         {
@@ -253,7 +250,7 @@ namespace iSpyApplication
                     }
                     break;
             }
-            onvifWizard1.CameraControl = CameraControl;
+            //onvifWizard1.CameraControl = CameraControl;
 
             if (!string.IsNullOrEmpty(CameraControl.Camobject.decodekey))
                 txtDecodeKey.Text = CameraControl.Camobject.decodekey;
@@ -294,7 +291,6 @@ namespace iSpyApplication
                 ddlScreen.SelectedIndex = 0;
             ddlScreen.ResumeLayout();
 
-
             SetSourceIndex(SourceIndex);
 
             if (CameraControl?.Camera?.VideoSource is VideoCaptureDevice)
@@ -304,112 +300,9 @@ namespace iSpyApplication
                 EnumeratedSupportedFrameSizes();
             }
 
-
-            //ximea
-
-            int deviceCount = 0;
-
-            try
-            {
-                deviceCount = XimeaCamera.CamerasCount;
-            }
-            catch(Exception)
-            {
-                //Ximea DLL not installed
-                //Logger.LogMessage("This is not a XIMEA device");
-            }
-
-            pnlXimea.Enabled = deviceCount>0;
-
-            if (pnlXimea.Enabled)
-            {
-                for (int i = 0; i < deviceCount; i++)
-                {
-                    ddlXimeaDevice.Items.Add("Device " + i);
-                }
-                if (NV("type")=="ximea")
-                {
-                    int deviceIndex = Convert.ToInt32(NV("device"));
-                    ddlXimeaDevice.SelectedIndex = ddlXimeaDevice.Items.Count > deviceIndex?deviceIndex:0;
-                    numXimeaWidth.Text = NV("width");
-                    numXimeaHeight.Text = NV("height");
-                    numXimeaOffsetX.Value = Convert.ToInt32(NV("x"));
-                    numXimeaOffestY.Value = Convert.ToInt32(NV("y"));
-
-                    decimal gain;
-                    decimal.TryParse(NV("gain"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out gain);
-                    numXimeaGain.Value =  gain;
-
-                    decimal exp;
-                    decimal.TryParse(NV("exposure"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out exp);
-                    if (exp == 0)
-                        exp = 100;
-                    numXimeaExposure.Value = exp;
-
-                    combo_dwnsmpl.SelectedItem  = NV("downsampling");
-                }
-            }
-            else
-            {
-                ddlXimeaDevice.Items.Add(LocRm.GetString("NoDevicesFound"));
-                ddlXimeaDevice.SelectedIndex = 0;
-            }
-
-            deviceCount = 0;
-            
-            try
-            {
-                foreach (var potentialSensor in KinectSensor.KinectSensors)
-                {
-                    if (potentialSensor.Status == KinectStatus.Connected)
-                    {
-                        deviceCount++;
-                        ddlKinectDevice.Items.Add(potentialSensor.UniqueKinectId);
-
-                        if (NV("type") == "kinect")
-                        {
-                            if (NV("UniqueKinectId") == potentialSensor.UniqueKinectId)
-                            {
-                                ddlKinectDevice.SelectedIndex = ddlKinectDevice.Items.Count - 1;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                //Type error if not installed
-                Logger.LogMessage("Kinect is not installed");
-            }
-            if (deviceCount>0)
-            {
-                if (ddlKinectDevice.SelectedIndex == -1)
-                    ddlKinectDevice.SelectedIndex = 0;
-            }
-            else
-            {
-                pnlKinect.Enabled = false;
-            }
-
-            ddlKinectVideoMode.SelectedIndex = 0;
-            if (NV("type") == "kinect")
-            {
-                try
-                {
-                    chkKinectSkeletal.Checked = Convert.ToBoolean(NV("KinectSkeleton"));
-                    chkTripWires.Checked = Convert.ToBoolean(NV("TripWires"));
-                    if (NV("StreamMode")!="")
-                        ddlKinectVideoMode.SelectedIndex = Convert.ToInt32(NV("StreamMode"));
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
-
             ddlRTSP.SelectedIndex = CameraControl.Camobject.settings.rtspmode;
 
-            onvifWizard1.CameraControl = CameraControl;
+            //onvifWizard1.CameraControl = CameraControl;
             _loaded = true;
             if (StartWizard) Wizard();
 
@@ -522,8 +415,6 @@ namespace iSpyApplication
             LocRm.SetString(linkLabel5, "Help");
             LocRm.SetString(label18, "Arguments");
             LocRm.SetString(linkLabel3, "DownloadVLC");
-            LocRm.SetString(chkKinectSkeletal, "ShowSkeleton");
-            LocRm.SetString(chkTripWires, "ShowTripWires");
             LocRm.SetString(label34, "Provider");
             LocRm.SetString(label45, "BorderTimeout");
             LocRm.SetString(label14, "Camera");
@@ -538,8 +429,6 @@ namespace iSpyApplication
             HideTab(tabPage4, Helper.HasFeature(Enums.Features.Source_Local));
             HideTab(tabPage5, Helper.HasFeature(Enums.Features.Source_Desktop));
             HideTab(tabPage6, Helper.HasFeature(Enums.Features.Source_VLC));
-            HideTab(tabPage7, Helper.HasFeature(Enums.Features.Source_Ximea));
-            HideTab(tabPage8, Helper.HasFeature(Enums.Features.Source_Kinect));
             HideTab(tabPage9, Helper.HasFeature(Enums.Features.Source_Custom));
             HideTab(tabPage10, Helper.HasFeature(Enums.Features.Source_ONVIF));
             HideTab(tabPage11, Helper.HasFeature(Enums.Features.Source_Clone));
@@ -713,92 +602,13 @@ namespace iSpyApplication
                     SetPTZPort();
                     break;
                 case 6:
-                    if (!pnlXimea.Enabled)
-                    {
-                        MessageBox.Show(LocRm.GetString("Validate_SelectCamera"), LocRm.GetString("Note"));
-                        return;
-                    }
-                    nv = "type=ximea";
-                    nv += ",device=" + ddlXimeaDevice.SelectedIndex;
-                    nv += ",width=" + numXimeaWidth.Text;
-                    nv += ",height=" + numXimeaHeight.Text;
-                    nv += ",x=" + (int)numXimeaOffsetX.Value;
-                    nv += ",y=" + (int)numXimeaOffestY.Value;
-                    nv += ",gain=" +
-                          String.Format(CultureInfo.InvariantCulture, "{0:0.000}",
-                                        numXimeaGain.Value);
-                    nv += ",exposure=" + String.Format(CultureInfo.InvariantCulture, "{0:0.000}",
-                                        numXimeaExposure.Value);
-                    nv += ",downsampling=" + combo_dwnsmpl.SelectedItem;
-                    VideoSourceString = nv;
-                    break;
+                    throw new NotSupportedException("Kinect/Ximea no longer supported");
                 case 7:
-                    if (!pnlKinect.Enabled)
-                    {
-                        MessageBox.Show(LocRm.GetString("Validate_SelectCamera"), LocRm.GetString("Note"));
-                        return;
-                    }
-                    nv = "type=kinect";
-                    nv += ",UniqueKinectId=" + ddlKinectDevice.SelectedItem;
-                    nv += ",KinectSkeleton=" + chkKinectSkeletal.Checked;
-                    nv += ",TripWires=" + chkTripWires.Checked;
-                    nv += ",StreamMode=" + ddlKinectVideoMode.SelectedIndex;
-                    
-                    VideoSourceString = nv;
-                    break;
+                    throw new NotSupportedException("Kinect/Ximea no longer supported");
                 case 8:
-                    VideoSourceString = txtCustomURL.Text;
-                    nv = "custom=" + ddlCustomProvider.SelectedItem;
-                    CameraControl.Camobject.settings.namevaluesettings = nv;
-                    CameraControl.Camobject.alerts.mode = "KinectPlugin";//custom ispykinect alert mode
-                    CameraControl.Camobject.detector.recordonalert = false;
-                    CameraControl.Camobject.alerts.minimuminterval = 10;
-                    CameraControl.Camobject.detector.recordondetect = false;
-                    CameraControl.Camobject.detector.type = "None";
-                    CameraControl.Camobject.settings.audiomodel = "NetworkKinect";
-                    try
-                    {
-                        var uri = new Uri(VideoSourceString);
-
-                        if (!string.IsNullOrEmpty(uri.DnsSafeHost))
-                        {
-                            CameraControl.Camobject.settings.audioip = uri.DnsSafeHost;
-                            CameraControl.Camobject.settings.audioport = uri.Port;
-                        }
-                    }
-                    catch
-                    {
-                        MessageBox.Show(LocRm.GetString("InvalidURL"), LocRm.GetString("Error"));
-                        return;
-                    }
-                    
-                    CameraControl.Camobject.settings.audiousername = "";
-                    CameraControl.Camobject.settings.audiopassword = "";
-                    CameraControl.Camobject.settings.bordertimeout = Convert.ToInt32(numBorderTimeout.Value);
-                    break;
+                    throw new NotSupportedException("Kinect/Ximea no longer supported");
                 case 9:
-
-                    var cfg = onvifWizard1.lbOnvifURLs.SelectedItem as ONVIFDevice.MediaEndpoint;
-                    if (cfg == null)
-                    {
-                        MessageBox.Show(LocRm.GetString("Validate_SelectCamera"), LocRm.GetString("Note"));
-                        return;
-                    }
-
-                    url = cfg.Uri.Uri;
-
-                    CameraLogin = onvifWizard1.txtOnvifUsername.Text;
-                    CameraPassword = onvifWizard1.txtOnvifPassword.Text;
-                    VideoSourceString = CameraControl.Camobject.settings.onvifident = onvifWizard1.ddlDeviceURL.Text;
-                    nv = "profilename=" + onvifWizard1.lbOnvifURLs.SelectedIndex.ToString() + ",use=" + (onvifWizard1.ddlConnectWith.SelectedIndex == 0 ? "FFMPEG" : "VLC");
-                    
-                    CameraControl.Camobject.ptz = -5;//onvif
-                    CameraControl.Camobject.settings.rtspmode = onvifWizard1.ddlTransport.SelectedIndex;
-                    CameraControl.Camobject.settings.onvif.rtspport = (int)onvifWizard1.numRTSP.Value;
-                    SetVideoSize(new Size(cfg.Width, cfg.Height));
-
-                    CameraControl.Camobject.settings.vlcargs = txtVLCArgs.Text.Trim();
-                    break;
+                    throw new NotSupportedException("ONVIF no longer supported");
                 case 10:
                     if (ddlCloneCamera.SelectedIndex>-1)
                     {
@@ -900,7 +710,7 @@ namespace iSpyApplication
 
         private void VideoSource_FormClosing(object sender, FormClosingEventArgs e)
         {
-            onvifWizard1.Deinit();
+            //onvifWizard1.Deinit();
         }
 
 
@@ -1030,7 +840,7 @@ namespace iSpyApplication
 
         #region Nested type: UISync
 
-        private class UISync
+        private static class UISync
         {
             private static ISynchronizeInvoke _sync;
 
@@ -1052,88 +862,6 @@ namespace iSpyApplication
         }
 
         #endregion
-
-        private void ddlXimeaDevice_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ConnectXimea();
-        }
-
-
-        private void ConnectXimea()
-        {
-            // close whatever is open now
-            if (!pnlXimea.Enabled) return;
-            try
-            {
-                if (CameraControl.XimeaSource==null)
-                    CameraControl.XimeaSource = new XimeaVideoSource( ddlXimeaDevice.SelectedIndex );
-                    
-                // start the camera
-                if (!CameraControl.XimeaSource.IsRunning)
-                    CameraControl.XimeaSource.Start();
-
-                // get some parameters
-                nameBox.Text = CameraControl.XimeaSource.GetParamString(CameraParameter.DeviceName);
-                snBox.Text = CameraControl.XimeaSource.GetParamString(CameraParameter.DeviceSerialNumber);
-                typeBox.Text = CameraControl.XimeaSource.GetParamString(CameraParameter.DeviceType);
-
-                // width
-                numXimeaWidth.Text = CameraControl.XimeaSource.GetParamInt(CameraParameter.Width ).ToString(CultureInfo.InvariantCulture);
-
-                // height
-                numXimeaHeight.Text = CameraControl.XimeaSource.GetParamInt(CameraParameter.Height).ToString(CultureInfo.InvariantCulture);
-
-                // exposure
-                numXimeaExposure.Minimum = (decimal)CameraControl.XimeaSource.GetParamFloat(CameraParameter.ExposureMin) / 1000;
-                numXimeaExposure.Maximum = (decimal)CameraControl.XimeaSource.GetParamFloat(CameraParameter.ExposureMax) / 1000;
-                numXimeaExposure.Value = new decimal(CameraControl.XimeaSource.GetParamFloat(CameraParameter.Exposure)) / 1000;
-                if (numXimeaExposure.Value == 0)
-                    numXimeaExposure.Value = 100;
-
-                // gain
-                numXimeaGain.Minimum = new decimal(CameraControl.XimeaSource.GetParamFloat(CameraParameter.GainMin));
-                numXimeaGain.Maximum = new decimal(CameraControl.XimeaSource.GetParamFloat(CameraParameter.GainMax));
-                numXimeaGain.Value = new decimal(CameraControl.XimeaSource.GetParamFloat(CameraParameter.Gain));
-
-                int maxDwnsmpl = CameraControl.XimeaSource.GetParamInt(CameraParameter.DownsamplingMax);
-
-                switch (maxDwnsmpl)
-                {
-                    case 8:
-                        combo_dwnsmpl.Items.Add("1");
-                        combo_dwnsmpl.Items.Add("2");
-                        combo_dwnsmpl.Items.Add("4");
-                        combo_dwnsmpl.Items.Add("8");
-                        break;
-                    case 6:
-                        combo_dwnsmpl.Items.Add("1");
-                        combo_dwnsmpl.Items.Add("2");
-                        combo_dwnsmpl.Items.Add("4");
-                        combo_dwnsmpl.Items.Add("6");
-                        break;
-                    case 4:
-                        combo_dwnsmpl.Items.Add("1");
-                        combo_dwnsmpl.Items.Add("2");
-                        combo_dwnsmpl.Items.Add("4");
-                        break;
-                    case 2:
-                        combo_dwnsmpl.Items.Add("1");
-                        combo_dwnsmpl.Items.Add("2");
-                        break;
-                    default:
-                        combo_dwnsmpl.Items.Add("1");
-                        break;
-                }
-                combo_dwnsmpl.SelectedIndex = combo_dwnsmpl.Items.Count-1;
-            }
-            catch ( Exception ex )
-            {
-                Logger.LogException(ex);
-                MessageBox.Show( ex.Message, LocRm.GetString("Error"),
-                    MessageBoxButtons.OK, MessageBoxIcon.Error );
-            }
-
-        }
 
         private void devicesCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1214,33 +942,7 @@ namespace iSpyApplication
 
         private void combo_dwnsmpl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_loaded)
-                return;
-            if (combo_dwnsmpl.SelectedIndex > -1 && CameraControl.XimeaSource!=null)
-            {
-                CameraControl.XimeaSource.SetParam(CameraParameter.Downsampling,
-                                                   Convert.ToInt32(
-                                                       combo_dwnsmpl.Items[combo_dwnsmpl.SelectedIndex].ToString()));
-
-                //update width and height info
-                numXimeaWidth.Text = CameraControl.XimeaSource.GetParamInt(CameraParameter.Width).ToString();
-                numXimeaHeight.Text = CameraControl.XimeaSource.GetParamInt(CameraParameter.Height).ToString();
-
-                //reset gain slider
-                numXimeaGain.Minimum = new Decimal(CameraControl.XimeaSource.GetParamFloat(CameraParameter.GainMin));
-                numXimeaGain.Maximum = new Decimal(CameraControl.XimeaSource.GetParamFloat(CameraParameter.GainMax));
-                numXimeaGain.Value = new Decimal(CameraControl.XimeaSource.GetParamFloat(CameraParameter.Gain));
-            }
-        }
-
-        private void numXimeaExposure_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void numXimeaGain_ValueChanged(object sender, EventArgs e)
-        {
-
+            //converted to noop
         }
 
         private void button4_Click_1(object sender, EventArgs e)
@@ -1256,8 +958,8 @@ namespace iSpyApplication
                 SetSourceIndex(fc.VideoSourceType);
                 
                 
-                CameraControl.Camobject.settings.login = txtLogin.Text = txtLogin2.Text = onvifWizard1.txtOnvifUsername.Text = fc.Username;
-                CameraControl.Camobject.settings.password = txtPassword.Text = txtPassword2.Text = onvifWizard1.txtOnvifPassword.Text = fc.Password;
+                //CameraControl.Camobject.settings.login = txtLogin.Text = txtLogin2.Text = onvifWizard1.txtOnvifUsername.Text = fc.Username;
+                //CameraControl.Camobject.settings.password = txtPassword.Text = txtPassword2.Text = onvifWizard1.txtOnvifPassword.Text = fc.Password;
                 CameraControl.Camobject.settings.cookies = fc.Cookies;
 
                 CameraControl.Camobject.settings.tokenconfig.tokenpath = fc.tokenPath;
@@ -1279,8 +981,8 @@ namespace iSpyApplication
                         cmbVLCURL.Text = fc.FinalUrl;
                         break;
                     case 9:
-                        onvifWizard1.ddlDeviceURL.Text = fc.FinalUrl;
-                        onvifWizard1.GoStep1();
+                        //onvifWizard1.ddlDeviceURL.Text = fc.FinalUrl;
+                        //onvifWizard1.GoStep1();
                         return;
                 }
 
@@ -1587,11 +1289,6 @@ namespace iSpyApplication
         {
             if (_loaded) 
                 rdoCaptureSnapshots.Checked = true;
-        }
-
-        private void chkKinectSkeletal_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void button6_Click(object sender, EventArgs e)

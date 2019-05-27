@@ -7,7 +7,7 @@ namespace iSpyApplication
 {
     public static class NATControl
     {
-        public static UPnPNAT NAT = new UPnPNAT();
+        public static readonly UPnPNAT NAT = new UPnPNAT();
         private static IStaticPortMappingCollection _mappings;
 
         public static IStaticPortMappingCollection Mappings

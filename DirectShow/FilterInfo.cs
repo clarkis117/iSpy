@@ -57,14 +57,14 @@ namespace iSpyPRO.DirectShow
         /// 
         /// <returns>A signed number indicating the relative values of this instance and <b>value</b>.</returns>
         /// 
-        public int CompareTo( object value )
+        public int CompareTo(object value)
         {
             var f = (FilterInfo) value;
 
             if ( f == null )
                 return 1;
 
-            return ( String.Compare(Name, f.Name, StringComparison.Ordinal) );
+            return string.Compare(Name, f.Name, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -129,6 +129,7 @@ namespace iSpyPRO.DirectShow
             }
             catch
             {
+                //TODO fix this so it doesn't cause an unauthorized access exception
             }
             finally
             {

@@ -10,6 +10,7 @@ using iSpyApplication.Utilities;
 
 namespace iSpyApplication
 {
+    //TODO replace with System.Globalization
     public static class LocRm
     {
         private static Translations _translationsList;

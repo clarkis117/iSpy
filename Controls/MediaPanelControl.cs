@@ -64,7 +64,7 @@ namespace iSpyApplication.Controls
 
         private void mpcbCloud_Click(object sender, EventArgs e)
         {
-            MainClass.MediaUploadCloud();
+            //MainClass.MediaUploadCloud();
         }
 
         private void mpcbMerge_Click(object sender, EventArgs e)
@@ -74,7 +74,7 @@ namespace iSpyApplication.Controls
 
         private void mpcbYouTube_Click(object sender, EventArgs e)
         {
-            MainClass.MediaUploadYouTube();
+            //MainClass.MediaUploadYouTube();
         }
     }
 }

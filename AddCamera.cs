@@ -9,10 +9,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using iSpyApplication.Cloud;
 using iSpyApplication.Controls;
-using iSpyApplication.Kinect;
-using iSpyApplication.Pelco;
 using iSpyApplication.Realtime;
 using iSpyApplication.Sources;
 using iSpyApplication.Sources.Audio;
@@ -38,7 +35,6 @@ namespace iSpyApplication
         public bool IsNew;
         private HSLFilteringForm _filterForm;
         private bool _loaded;
-        private ConfigureTripWires _ctw;
         private PiPConfig _pip;
         public MainForm MainClass;
 
@@ -862,10 +858,6 @@ namespace iSpyApplication
                 if (_filterForm != null)
                     _filterForm.ImageProcess = (Bitmap) e.Frame.Clone();
 
-                if (_ctw != null && _ctw.TripWireEditor1 != null)
-                {
-                    _ctw.TripWireEditor1.LastFrame = e.Frame;
-                }
                 if (_pip != null && _pip.areaSelector1 != null)
                 {
                     _pip.areaSelector1.LastFrame = e.Frame;
@@ -1525,17 +1517,16 @@ namespace iSpyApplication
             }
             if (CameraControl.Camobject.ptz==-3 || CameraControl.Camobject.ptz==-4)
             {
-                foreach(string cmd in PTZController.PelcoCommands)
-                {
-                    lbExtended.Items.Add(new ListItem(cmd, cmd));
-                }
-                
+                throw new NotSupportedException("PELCO no longer supported");
             }
 
+            /*
             if (CameraControl.Camobject.ptz == -5)
             {
                 PopOnvifPresets();
             }
+            */
+
             switch (CameraControl.Camobject.ptz)
             {
                 case -1:
@@ -1549,6 +1540,7 @@ namespace iSpyApplication
             }
         }
 
+        /*
         private void PopOnvifPresets()
         {
             lbExtended.Items.Clear();
@@ -1558,6 +1550,7 @@ namespace iSpyApplication
                 lbExtended.Items.Add(new ListItem(preset.Name, preset.token));
             }
         }
+        */
 
         private void PnlPtzPaint(object sender, PaintEventArgs e)
         {
@@ -1748,22 +1741,6 @@ namespace iSpyApplication
             if (ddlAlertMode.SelectedIndex == -1)
                 return;
 
-            switch (ddlAlertMode.SelectedItem.ToString())
-            {
-                case "Virtual Trip Wires":
-                    _ctw = new ConfigureTripWires();
-                    _ctw.TripWireEditor1.Init(CameraControl.Camobject.alerts.pluginconfig);
-                    _ctw.ShowDialog(this);
-                    CameraControl.Camobject.alerts.pluginconfig = _ctw.TripWireEditor1.Config;
-                    if (CameraControl.Camera != null && CameraControl.Camera.VideoSource is KinectStream)
-                    {
-                        ((KinectStream) CameraControl.Camera.VideoSource).InitTripWires(
-                            CameraControl.Camobject.alerts.pluginconfig);
-                    }
-                    _ctw.Dispose();
-                    _ctw = null;
-                    break;
-                default:
                     if (CameraControl.Camera != null && CameraControl.Camera.Plugin != null)
                     {
                         CameraControl.ConfigurePlugin();
@@ -1773,10 +1750,6 @@ namespace iSpyApplication
                         MessageBox.Show(this,
                                         LocRm.GetString("Validate_Initialise_Camera"));
                     }
-                    break;
-            }
-
-
         }        
 
         private void DdlAlertModeSelectedIndexChanged(object sender, EventArgs e)
@@ -2230,7 +2203,7 @@ namespace iSpyApplication
                             //sometimes seems to return an invalid result (camera bug?)
                         }
                         Thread.Sleep(1000); //allows time to complete
-                        PopOnvifPresets();
+                        //PopOnvifPresets();
                     }
                 }
             }
@@ -2254,7 +2227,7 @@ namespace iSpyApplication
 
                     }
                     Thread.Sleep(1000);
-                    PopOnvifPresets();
+                    //PopOnvifPresets();
                 }
             }
 
@@ -2487,6 +2460,7 @@ namespace iSpyApplication
 
         private void Authorise(string provider)
         {
+            /*
             string url = "";
             var rurl = "https://www.ispyconnect.com";
             switch (provider)
@@ -2526,6 +2500,8 @@ namespace iSpyApplication
                 if (!string.IsNullOrEmpty(auth.AuthCode))
                 {
                     bool b = false;
+
+                    
                     switch (provider)
                     {
                         case "drive":
@@ -2549,10 +2525,12 @@ namespace iSpyApplication
                     }
                     if (b && provider!="youtube")
                         CameraControl.Camobject.settings.cloudprovider.provider = ddlCloudProviders.SelectedItem.ToString().ToLower();
+                    
 
                     MessageBox.Show(this, b ? LocRm.GetString("OK") : LocRm.GetString("Failed")+": Please ensure your login details are correct and you don't have two factor authentication switched on for your cloud provider.");
                 }
             }
+    */
         }
 
         private void flowLayoutPanel11_Paint(object sender, PaintEventArgs e)

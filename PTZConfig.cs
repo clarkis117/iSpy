@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using iSpyApplication.Controls;
-using iSpyApplication.Pelco;
 
 namespace iSpyApplication
 {
@@ -73,6 +72,7 @@ namespace iSpyApplication
                 //default
                 CameraControl.Camobject.settings.ptzpelcoconfig = "COM1|9600|8|One|Odd|1";
             }
+            /*
             using (var pc = new PelcoConfig { Config = CameraControl.Camobject.settings.ptzpelcoconfig })
             {
                 if (pc.ShowDialog(this) == DialogResult.OK)
@@ -81,6 +81,7 @@ namespace iSpyApplication
                     CameraControl.PTZ.ConfigurePelco();
                 }
             }
+            */
         }
 
         private void button2_Click(object sender, EventArgs e)

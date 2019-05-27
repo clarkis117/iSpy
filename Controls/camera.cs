@@ -8,9 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using AForge;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using System.Text;
+using Accord;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 using iSpyApplication.Sources;
 using iSpyApplication.Sources.Video;
 using iSpyApplication.Utilities;
@@ -122,8 +123,8 @@ namespace iSpyApplication.Controls
         {
             get
             {
-                int newWidth = Convert.ToInt32(Width / ZFactor);
-                int newHeight = Convert.ToInt32(Height / ZFactor);
+                int newWidth = (int) Math.Round(Width / ZFactor);
+                int newHeight = (int) Math.Round(Height / ZFactor);
 
                 int left = ZPoint.X - newWidth / 2;
                 int top = ZPoint.Y - newHeight / 2;
@@ -473,7 +474,7 @@ namespace iSpyApplication.Controls
             var nf = NewFrame;
             var f = e.Frame;
 
-            if (nf==null || f==null)
+            if (nf is null || f is null)
                 return;
 
             if (LastFrameEvent > DateTime.MinValue)
@@ -727,6 +728,7 @@ namespace iSpyApplication.Controls
             set { _tags = value; }
         }
 
+        //TODO perf hot spot
         private void AddTimestamp(Bitmap bmp)
         {
             if (CW.Camobject.settings.timestamplocation != 0 &&
@@ -734,20 +736,20 @@ namespace iSpyApplication.Controls
             {
                 using (Graphics gCam = Graphics.FromImage(bmp))
                 {
+                    StringBuilder ts = new StringBuilder(CW.Camobject.settings.timestampformatter);
 
-                    var ts = CW.Camobject.settings.timestampformatter.Replace("{FPS}",
-                        $"{Framerate:F2}");
+                    ts = ts.Replace("{FPS}", $"{Framerate:F2}");
                     ts = ts.Replace("{CAMERA}", CW.Camobject.name);
-                    ts = ts.Replace("{REC}", CW.Recording ? "REC" : "");
+                    ts = ts.Replace("{REC}", CW.Recording ? "REC" : string.Empty);
                     var c = CW.Camera;
-                    ts = ts.Replace("{LEVEL}", c?.MotionLevel.ToString("0.##") ?? "");
+                    ts = ts.Replace("{LEVEL}", c?.MotionLevel.ToString("0.##") ?? string.Empty);
 
                     if (MainForm.Tags.Count > 0)
                     {
                         var l = MainForm.Tags.ToList();
                         foreach (var t in l)
                         {
-                            string sval="";
+                            string sval = string.Empty;
                             if (Tags.ContainsKey(t))
                                 sval = Tags[t];
                             ts = ts.Replace(t, sval);
@@ -755,16 +757,17 @@ namespace iSpyApplication.Controls
                     }
 
                     var timestamp = "Invalid Timestamp";
-                    try
-                    {
-                        timestamp = String.Format(ts,
+
+                    double offset = (double)Math.Round(CW.Camobject.settings.timestampoffset);
+                    DateTime now = DateTime.Now.AddHours(offset);
+
+                    timestamp = ts.ToString().Format(now).Trim();
+
+                    /*
+                    timestamp = String.Format(ts,
                             DateTime.Now.AddHours(
                                 Convert.ToDouble(CW.Camobject.settings.timestampoffset))).Trim();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                    */
 
                     var rs = gCam.MeasureString(timestamp, DrawFont).ToSize();
                     rs.Width += 5;
@@ -1014,8 +1017,9 @@ namespace iSpyApplication.Controls
         {
             get
             {
-                if (_drawfont!=null)
+                if (_drawfont is object)
                     return _drawfont;
+
                 _drawfont = FontXmlConverter.ConvertToFont(CW.Camobject.settings.timestampfont);
                 return _drawfont;
             }
@@ -1025,8 +1029,9 @@ namespace iSpyApplication.Controls
         {
             get
             {
-                if (_foreBrush!=null)
+                if (_foreBrush is object)
                     return _foreBrush;
+
                 Color c = CW.Camobject.settings.timestampforecolor.ToColor();
                 _foreBrush = new SolidBrush(Color.FromArgb(255,c.R,c.G,c.B));
                 return _foreBrush;

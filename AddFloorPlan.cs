@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using AForge.Imaging.Filters;
+using Accord.Imaging.Filters;
 using System.Linq;
 using iSpyApplication.Controls;
 using iSpyApplication.Utilities;

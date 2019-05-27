@@ -1,5 +1,5 @@
 ﻿using System;
-using AForge.Imaging;
+using Accord.Imaging;
 
 namespace iSpyApplication.Controls
 {

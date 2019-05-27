@@ -1,8 +1,8 @@
 ﻿
 using System;
 using System.Drawing.Imaging;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 
 namespace iSpyApplication.Vision
 {
@@ -102,7 +102,7 @@ namespace iSpyApplication.Vision
         // binary erosion filter
         private readonly BinaryErosion3x3 _erosionFilter = new BinaryErosion3x3( );
         // binary dilatation filter
-        private readonly BinaryDilatation3x3 _dilatationFilter = new BinaryDilatation3x3( );
+        private readonly BinaryDilation3x3 _dilatationFilter = new BinaryDilation3x3( );
 
         // dummy object to lock for synchronization
         private readonly object _sync = new object( );
@@ -471,12 +471,12 @@ namespace iSpyApplication.Vision
                 if ( _suppressNoise )
                 {
                     // suppress noise and calculate motion amount
-                    AForge.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _motionSize );
+                    Accord.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _motionSize );
                     _erosionFilter.Apply( _tempFrame, _motionFrame );
 
                     if ( _keepObjectEdges )
                     {
-                        AForge.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _motionSize );
+                        Accord.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _motionSize );
                         _dilatationFilter.Apply( _tempFrame, _motionFrame );
                     }
                 }

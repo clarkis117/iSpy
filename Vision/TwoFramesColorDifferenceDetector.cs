@@ -1,15 +1,15 @@
-﻿// AForge Vision Library
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
+﻿// Accord Vision Library
+// Accord.NET framework
+// http://www.Accordnet.com/framework/
 //
-// Copyright © AForge.NET, 2005-2011
-// contacts@aforgenet.com
+// Copyright © Accord.NET, 2005-2011
+// contacts@Accordnet.com
 //
 
 using System;
 using System.Drawing.Imaging;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 
 namespace iSpyApplication.Vision
 {
@@ -279,7 +279,7 @@ namespace iSpyApplication.Vision
                 if ( _suppressNoise )
                 {
                     // suppress noise and calculate motion amount
-                    AForge.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _motionSize );
+                    Accord.SystemTools.CopyUnmanagedMemory( _tempFrame.ImageData, _motionFrame.ImageData, _motionSize );
                     _erosionFilter.Apply( _tempFrame, _motionFrame );
                 }
 

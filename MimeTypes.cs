@@ -576,19 +576,13 @@ namespace iSpyApplication
 
         public static string GetMimeType(string extension)
         {
-            if (extension == null)
-            {
+            if (extension is null)
                 throw new ArgumentNullException("extension");
-            }
 
             if (!extension.StartsWith("."))
-            {
                 extension = "." + extension;
-            }
 
-            string mime;
-
-            return Mappings.TryGetValue(extension, out mime) ? mime : "application/octet-stream";
+            return Mappings.TryGetValue(extension, out string mime) ? mime : "application/octet-stream";
         }
     }
 }

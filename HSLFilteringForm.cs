@@ -1,8 +1,8 @@
 // Image Processing Lab
-// http://www.aforgenet.com/projects/iplab/
+// http://www.Accordnet.com/projects/iplab/
 //
 // Copyright © Andrew Kirillov, 2005-2009
-// andrew.kirillov@aforgenet.com
+// andrew.kirillov@Accordnet.com
 //
 
 using System;
@@ -10,9 +10,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
-using AForge;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 using iSpyApplication.Controls;
 using PictureBox = iSpyApplication.Controls.PictureBox;
 

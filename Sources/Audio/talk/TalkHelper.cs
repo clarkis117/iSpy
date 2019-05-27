@@ -21,9 +21,7 @@ namespace iSpyApplication.Sources.Audio.talk
                         source);
                     break;
                 case "NetworkKinect":
-                    talkTarget = new TalkNetworkKinect(cam.settings.audioip, cam.settings.audioport,
-                        source);
-                    break;
+                    throw new NotSupportedException("Kinect no longer supported");
                 case "Axis":
                     talkTarget = new TalkAxis(cam.settings.audioip, cam.settings.audioport,
                         cam.settings.audiousername, cam.settings.audiopassword, source);

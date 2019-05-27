@@ -895,17 +895,7 @@ namespace iSpyApplication.Controls
                             MainClass.EditObject(ctrl, _owner);
                             break;
                         case 6:
-                            if (Helper.HasFeature(Enums.Features.Access_Media))
-                            {
-                                string url = MainForm.Webpage;
-                                if (WsWrapper.WebsiteLive && MainForm.Conf.ServicesEnabled)
-                                {
-                                    MainForm.OpenUrl(url);
-                                }
-                                else
-                                    MainClass.Connect(url, false);
-                            }
-                            break;
+                            throw new NotSupportedException("Website not supported exception");
                         case 7:
                             if (ctrl.CanGrab && ctrl.IsEnabled)
                             {

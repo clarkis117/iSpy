@@ -5,7 +5,6 @@ using System.Linq;
 
 using System.Threading;
 using System.Windows.Forms;
-using iSpyApplication.Cloud;
 using iSpyApplication.Controls;
 using iSpyApplication.Properties;
 using iSpyApplication.Utilities;
@@ -118,7 +117,7 @@ namespace iSpyApplication
                 MessageBox.Show(this, LocRm.GetString("SpecifyArchiveLocation"));
                 ShowSettings(2);
             }
-            if (!String.IsNullOrWhiteSpace(Conf.ArchiveNew))
+            if (!string.IsNullOrWhiteSpace(Conf.ArchiveNew))
             {
                 int j = 0;
                 string msg = "";
@@ -435,6 +434,7 @@ namespace iSpyApplication
             }
         }
 
+        /*
         internal void MediaUploadCloud()
         {
             if (!Conf.Subscribed)
@@ -461,7 +461,9 @@ namespace iSpyApplication
                 MessageBox.Show(this, LocRm.GetString(msg));
             
         }
+        */
 
+        /*
         internal void MediaUploadYouTube()
         {
             if (!Conf.Subscribed)
@@ -487,7 +489,7 @@ namespace iSpyApplication
             if (msg != "")
                 MessageBox.Show(this, LocRm.GetString(msg));
         }
-
+        */
 
         internal void MergeMedia()
         {

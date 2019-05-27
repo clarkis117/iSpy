@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using AForge.Imaging;
+using Accord.Imaging;
 
 namespace iSpyApplication.Controls
 {
@@ -220,7 +220,7 @@ namespace iSpyApplication.Controls
                 {
                     hsl.Hue = i;
                     // convert from HSL to RGB
-                    HSL.ToRGB(hsl, rgb);
+                    HSL.ToRGB(hsl, ref rgb);
                     // create brush
                     brush = new SolidBrush(rgb.Color);
                     // draw one hue value
@@ -240,7 +240,7 @@ namespace iSpyApplication.Controls
                     {
                         hsl.Hue = i;
                         // convert from HSL to RGB
-                        HSL.ToRGB(hsl, rgb);
+                        HSL.ToRGB(hsl, ref rgb);
                         // create brush
                         brush = new SolidBrush(rgb.Color);
                     }

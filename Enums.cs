@@ -60,8 +60,6 @@ namespace iSpyApplication
             Source_Local =      128,
             Source_Desktop =    256,
             Source_VLC =        512,
-            Source_Ximea =      1024,
-            Source_Kinect =     2048,
             Source_Custom =     4096,
             Access_Media =      8192,
             Remote_Commands =   16384,

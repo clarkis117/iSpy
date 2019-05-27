@@ -39,7 +39,7 @@ namespace iSpyApplication
             t.Start();
         }
 
-        private class UISync
+        private static class UISync
         {
             private static ISynchronizeInvoke _sync;
 
@@ -202,7 +202,7 @@ namespace iSpyApplication
             
             UISync.Execute(() => rtbOutput.Text += "Checking your account... ");
 
-            var result = WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, false);
+            var result = new string[] { "OK" }; //WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, false);
             if (result[0] != "OK")
             {
                 UISync.Execute(() => rtbOutput.Text += result[0]);
@@ -315,7 +315,7 @@ namespace iSpyApplication
 
                     UISync.Execute(() => rtbOutput.Text += "Checking external access... "+NL);
 
-                    result = WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, true);
+                    result = new string[] { "OK" }; //WsWrapper.TestConnection(MainForm.Conf.WSUsername, MainForm.Conf.WSPassword, true);
 
                     if (result.Length>3 && result[3] != "")
                     {

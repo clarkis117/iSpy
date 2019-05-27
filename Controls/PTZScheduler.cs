@@ -126,18 +126,14 @@ namespace iSpyApplication.Controls
             }
             if (CameraControl.Camobject.ptz == -3 || CameraControl.Camobject.ptz == -4)
             {
-                foreach (string cmd in PTZController.PelcoCommands)
-                {
-                    ddlScheduleCommand.Items.Add(new MainForm.ListItem(cmd, cmd));
-                }
-
+                throw new NotSupportedException("PELCO no longer supported");
             }
 
             if (CameraControl.Camobject.ptz == -5)
             {
-                foreach (var preset in CameraControl.PTZ.ONVIFPresets)
-                    ddlScheduleCommand.Items.Add(new MainForm.ListItem(preset.Name, preset.Name));
+                throw new NotSupportedException("ONVIF no longer supported");
             }
+
             if (ddlScheduleCommand.Items.Count > 0)
                 ddlScheduleCommand.SelectedIndex = 0;
         }

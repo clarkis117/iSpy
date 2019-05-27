@@ -1450,17 +1450,14 @@ namespace iSpyApplication.Sources.Video
         // Set resolution for the specified stream configuration
         private static void SetResolution(IAMStreamConfig streamConfig, VideoCapabilities resolution)
         {
-            if (resolution == null)
-            {
+            if (resolution is null)
                 return;
-            }
 
             // iterate through device's capabilities to find mediaType for desired resolution
-            int capabilitiesCount, capabilitySize;
             AMMediaType newMediaType = null;
             var caps = new VideoStreamConfigCaps();
 
-            streamConfig.GetNumberOfCapabilities(out capabilitiesCount, out capabilitySize);
+            streamConfig.GetNumberOfCapabilities(out int capabilitiesCount, out int capabilitySize);
 
             for (int i = 0; i < capabilitiesCount; i++)
             {
@@ -1468,13 +1465,8 @@ namespace iSpyApplication.Sources.Video
                 {
                     var vc = new VideoCapabilities(streamConfig, i);
 
-                    if (resolution == vc)
-                    {
-                        if (streamConfig.GetStreamCaps(i, out newMediaType, caps) == 0)
-                        {
-                            break;
-                        }
-                    }
+                    if (resolution == vc && streamConfig.GetStreamCaps(i, out newMediaType, caps) == 0)
+                       break;
                 }
                 catch (Exception ex)
                 {
@@ -1741,8 +1733,6 @@ namespace iSpyApplication.Sources.Video
             _lastFrame = DateTime.UtcNow;
             nf.Invoke(this, dae);
             bmp.Dispose();
-
-
         }
 
         /// <summary>
@@ -1793,21 +1783,28 @@ namespace iSpyApplication.Sources.Video
                 return 0;
             }
 
+            //TODO this can be made safe and can use MemoryMarshell instead off native methods
             // Callback method that receives a pointer to the sample buffer
             public int BufferCB(double sampleTime, IntPtr buffer, int bufferLen)
             {
                 if (_parent.NewFrame != null && _parent.ShouldEmitFrame)
                 {
-                    // create new image
-                    using (var image = new Bitmap(Width, Height, PixelFormat.Format24bppRgb))
-                    {
+                    int bitsPerPixel = ((int)PixelFormat.Format24bppRgb & 0xff00) >> 8;
+                    int bytesPerPixel = (bitsPerPixel + 7) / 8;
+                    int stride = 4 * ((Width * bytesPerPixel + 3) / 4);
 
+                    // create new image
+                    using (var image = new Bitmap(Width, Height, stride, PixelFormat.Format24bppRgb, buffer))
+                    {
+                        image.RotateFlip(RotateFlipType.Rotate180FlipX);
+                        
+                        /*
                         // lock bitmap data
                         BitmapData imageData = image.LockBits(
                             new Rectangle(0, 0, Width, Height),
                             ImageLockMode.ReadWrite,
                             PixelFormat.Format24bppRgb);
-
+                                                 
                         // copy image data
                         int srcStride = imageData.Stride;
                         int dstStride = imageData.Stride;
@@ -1827,18 +1824,13 @@ namespace iSpyApplication.Sources.Video
 
                         // unlock bitmap data
                         image.UnlockBits(imageData);
+                         */
 
                         // notify parent
                         if (_snapshotMode)
-                        {
                             _parent.OnSnapshotFrame(image);
-                        }
                         else
-                        {
                             _parent.OnNewFrame(image);
-                        }
-
-                        // release the image
                     }
                 }
 

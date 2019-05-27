@@ -53,22 +53,10 @@ namespace iSpyApplication
                             case -3:
                             case -4:
                                 //Pelco extended
-                                ddlExtended.Items.Add(new ListItem(LocRm.GetString("SelectCommand"), ""));
-                                foreach(string cmd in PTZController.PelcoCommands)
-                                {
-                                    ddlExtended.Items.Add(new ListItem(cmd, cmd));
-                                }
-                                pnlController.Enabled = true;
-                                break;
+                                throw new NotSupportedException("PELCO no longer supported");
                             case -5:
                                 //ONVIF
-                                ddlExtended.Items.Add(new ListItem(LocRm.GetString("SelectCommand"), ""));
-                                foreach(var cmd in CameraControl.PTZ.ONVIFPresets)
-                                {
-                                    ddlExtended.Items.Add(new ListItem(cmd.Name, cmd.Name));
-                                }
-                                pnlController.Enabled = true;
-                                break;
+                                throw new NotSupportedException("ONVIF no longer supported");
                             case -6:
                                 ddlExtended.Items.Add(new ListItem(LocRm.GetString("None"), ""));
                                 pnlController.Enabled = false;

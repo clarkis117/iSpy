@@ -145,7 +145,8 @@ namespace iSpyApplication
                    Thread.Sleep(500);
                 }
             }
-            throw new Exception("Cannot read file: "+fi.Name+" - something else has a lock on it.");
+
+            throw new Exception($"Cannot read file: {fi.Name} - something else has a lock on it.");
         }
 
 
@@ -306,32 +307,36 @@ namespace iSpyApplication
             return r;
 
         }
+
         public static Rectangle GetArea(Rectangle container, int imageW, int imageH)
         {
             int contH = container.Height;
             int contW = container.Width;
             int x = container.X;
             int y = container.Y;
+
             if (contH > 0 && contW > 0)
             {
-                double arw = Convert.ToDouble(contW) / Convert.ToDouble(imageW);
-                double arh = Convert.ToDouble(contH) / Convert.ToDouble(imageH);
+                double arw = contW / imageW;
+                double arh = contH / imageH;
                 int w;
                 int h;
                 if (arh <= arw)
                 {
-                    w = Convert.ToInt32(((Convert.ToDouble(contW) * arh) / arw));
+                    w = (int) Math.Round(contW * arh / arw);
                     h = contH;
                 }
                 else
                 {
                     w = contW;
-                    h = Convert.ToInt32((Convert.ToDouble(contH) * arw) / arh);
+                    h = (int) Math.Round(contH * arw / arh);
                 }
+
                 int x2 = x + ((contW - w) / 2);
                 int y2 = y + ((contH - h) / 2);
                 return new Rectangle(x2, y2, w, h);
             }
+
             return container;
         }
 
@@ -414,11 +419,9 @@ namespace iSpyApplication
             return d;
         }
 
-        public static Boolean IsAlphaNumeric(string strToCheck)
-        {
-            Regex rg = new Regex(@"^[a-zA-Z0-9\s,]*$");
-            return rg.IsMatch(strToCheck);
-        }
+        private static readonly Regex alphaNumericRegex = new Regex(@"^[a-zA-Z0-9\s,]*$");
+
+        public static bool IsAlphaNumeric(string strToCheck) => alphaNumericRegex.IsMatch(strToCheck);
 
         public static void CopyFolder(string sourceFolder, string destFolder)
         {

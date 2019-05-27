@@ -11,9 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using iSpyApplication.Cloud;
 using iSpyApplication.Controls;
-using iSpyApplication.Onvif;
 using iSpyApplication.Utilities;
 using NAudio.Wave;
 using Newtonsoft.Json;
@@ -458,119 +456,14 @@ namespace iSpyApplication.Server
                         }
                         else
                         {
-                            string code = GetVar(sRequest, "code");
-                            switch (provider.ToLower())
-                            {
-                                case "box":
-                                    if (Box.Authorise(code))
-                                    {
-                                        message = LocRm.GetString("Authorised", lc);
-                                    }
-                                    else
-                                        message = LocRm.GetString("Failed", lc);
-                                    break;
-                                case "onedrive":
-                                    if (OneDrive.Authorise(code))
-                                    {
-                                        message = LocRm.GetString("Authorised", lc);
-                                    }
-                                    else
-                                        message = LocRm.GetString("Failed", lc);
-                                    break;
-                                case "drive":
-                                    {
-                                        if (Drive.Authorise(code))
-                                        {
-                                            message = LocRm.GetString("Authorised", lc);
-                                        }
-                                        else
-                                            message = LocRm.GetString("Failed", lc);
-                                    }
-                                    break;
-                                case "flickr":
-                                    if (Flickr.Authorise(code))
-                                    {
-                                        message = LocRm.GetString("Authorised", lc);
-                                    }
-                                    else
-                                        message = LocRm.GetString("Failed", lc);
-                                    break;
-                                case "dropbox":
-                                    if (Dropbox.Authorise(code))
-                                    {
-                                        message = LocRm.GetString("Authorised", lc);
-                                    }
-                                    else
-                                        message = LocRm.GetString("Failed", lc);
-                                    break;
-                                case "youtube":
-                                    {
-                                        if (YouTubeUploader.Authorise(code))
-                                        {
-                                            message = LocRm.GetString("Authorised", lc);
-                                        }
-                                        else
-                                            message = LocRm.GetString("Failed", lc);
-                                    }
-                                    break;
-                            }
+                   
                         }
 
                         resp = string.Format(t, provider, url, message, error);
                     }
                     break;
                 case "getauthoriseurl":
-                    {
-                        string provider = GetVar(sPhysicalFilePath, "provider");
-                        t = "{{\"provider\":\"{0}\",\"url\":\"{1}\",\"message\":\"{2}\",\"error\":\"{3}\"}}";
-                        string url = "", message = "", error = "";
-                        
-                        switch (provider.ToLower())
-                        {
-                            case "flickr":
-                                url = Flickr.GetAuthoriseURL(out error);
-                                break;
-                        }
-                        
-
-                        resp = string.Format(t, provider, url, message, error);
-                    }
-                    break;
-                case "onvifdiscover":
-                    {
-                        string un = GetVar(sRequest, "un");
-                        string pwd = GetVar(sRequest, "pwd");
-                        string url = GetVar(sRequest, "surl");
-
-                        try
-                        {
-                            var dev = new ONVIFDevice(url, un, pwd,0,15);
-                            var p = dev.Profiles;
-                            if (p == null)
-                                throw new ApplicationException("ONVIF failed to connect");
-                            for (int i = 0; i < p.Length; i++)
-                            {
-                                dev.SelectProfile(i);
-                                var ep = dev.StreamEndpoint;
-                                if (ep != null && ep.Width > 0)
-                                {
-                                    resp += string.Format(template, dev.Profile.Name + " (" + ep.Width + "x" + ep.Height + ")", i);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            resp = "{\"error\":\"" + ex.Message.JsonSafe() + "\"}";
-                        }
-                        Uri u;
-                        if (!Uri.TryCreate(url, UriKind.Absolute, out u))
-                        {
-                            resp = "{\"error\":\"" + LocRm.GetString("InvalidURL", lc) + "\"}";
-                            break;
-                        }
-                        resp = "{\"list\":[" + resp.Trim(',') + "]}";
-                    }
-                    break;
+                    throw new NotSupportedException("external auth no longer supported");
                 case "editsource":
                     {
                         switch (ot)
@@ -1218,17 +1111,10 @@ namespace iSpyApplication.Server
                                         break;
                                     case "-3":
                                     case "-4":
-                                        {
-                                            lcomms.AddRange(PTZController.PelcoCommands.Select(c => new Helper.ListItem(c, c)));
-                                        }
-                                        break;
+                                        throw new NotSupportedException("PELCO no longer supported");
 
                                     case "-5":
-                                    {
-                                        var cc = MainForm.InstanceReference.GetCameraWindow(oid);
-                                        lcomms.AddRange(cc.PTZ.ONVIFPresets.Select(c => new Helper.ListItem(c.Name, c.Name)));
-                                    }
-                                        break;
+                                        throw new NotSupportedException("ONVIF no longer supported");
 
                                     default:
                                         var ptz = MainForm.PTZs.Single(p => p.id == Convert.ToInt32(id[0]));
@@ -1410,21 +1296,9 @@ namespace iSpyApplication.Server
                             break;
                         case -3:
                         case -4:
-                            cmdlist = PTZController.PelcoCommands.Aggregate(cmdlist,
-                                                                            (current, c) =>
-                                                                            current +
-                                                                            (string.Format(template, c.JsonSafe(), c.JsonSafe())));
-                            break;
+                            throw new NotSupportedException("PELCO no longer supported");
                         case -5:
-                            cw = io as CameraWindow;
-                            if (cw?.PTZ?.ONVIFPresets.Length > 0)
-                            {
-                                cmdlist = cw.PTZ.ONVIFPresets.Aggregate(cmdlist,
-                                    (current, c) =>
-                                        current +
-                                        (string.Format(template, c.Name.JsonSafe(), c.Name.JsonSafe())));
-                            }
-                            break;
+                            throw new NotSupportedException("ONVIF no longer supported");
                     }
                     resp = "{\"elements\":[" + cmdlist.Trim(',') + "]}";
                     break;
@@ -1697,19 +1571,9 @@ namespace iSpyApplication.Server
                     break;
                 //post commands
                 case "uploadyoutube":
-                    {
-                        var d = getJSONObject(sBuffer);
-                        t = YouTubeUploader.Upload(oid, Helper.GetFullPath(ot, oid) + d.files[0].name, out success);
-                        resp = "{\"action\":\"" + cmd + "\",\"status\":\"" + (success ? "ok" : "Upload Failed ("+t.JsonSafe()+")") + "\"}";
-                    }
-                    break;
+                    throw new NotSupportedException("YouTube no longer supported");
                 case "uploadcloud":
-                    {
-                        var d = getJSONObject(sBuffer);
-                        t = CloudGateway.Upload(ot, oid, Helper.GetFullPath(ot, oid) + d.files[0].name, out success);
-                        resp = "{\"action\":\"" + cmd + "\",\"status\":\"" + (success ? "ok" : "Upload Failed (" + t.JsonSafe() + ")") + "\"}";
-                    }
-                    break;
+                    throw new NotSupportedException("Cloud no longer supported");
                 case "massdelete":
                     {
                         var d = getJSONObject(sBuffer);

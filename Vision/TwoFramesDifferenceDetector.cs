@@ -1,15 +1,15 @@
-﻿// AForge Vision Library
-// AForge.NET framework
-// http://www.aforgenet.com/framework/
+﻿// Accord Vision Library
+// Accord.NET framework
+// http://www.Accordnet.com/framework/
 //
-// Copyright © AForge.NET, 2005-2011
-// contacts@aforgenet.com
+// Copyright © Accord.NET, 2005-2011
+// contacts@Accordnet.com
 //
 
 using System;
 using System.Drawing.Imaging;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 
 namespace iSpyApplication.Vision
 {
@@ -103,35 +103,21 @@ namespace iSpyApplication.Vision
         /// <summary>
         /// Motion level value, [0, 1].
         /// </summary>
-        /// 
         /// <remarks><para>Amount of changes in the last processed frame. For example, if value of
         /// this property equals to 0.1, then it means that last processed frame has 10% difference
         /// with previous frame.</para>
         /// </remarks>
-        /// 
-        public float MotionLevel
-        {
-            get
-            {
-                //lock ( _sync )
-                {
-                    return (float) _pixelsChanged/(_width*_height);
-                }
-            }
-        }
+        public float MotionLevel => (float) _pixelsChanged/(_width*_height);
 
         /// <summary>
         /// Motion frame containing detected areas of motion.
         /// </summary>
-        /// 
         /// <remarks><para>Motion frame is a grayscale image, which shows areas of detected motion.
         /// All black pixels in the motion frame correspond to areas, where no motion is
         /// detected. But white pixels correspond to areas, where motion is detected.</para>
-        /// 
         /// <para><note>The property is set to <see langword="null"/> after processing of the first
         /// video frame by the algorithm.</note></para>
         /// </remarks>
-        ///
         public UnmanagedImage MotionFrame
         {
             get
@@ -271,7 +257,7 @@ namespace iSpyApplication.Vision
                 if (_suppressNoise)
                 {
                     // suppress noise and calculate motion amount
-                    AForge.SystemTools.CopyUnmanagedMemory(_tempFrame.ImageData, _motionFrame.ImageData, _frameSize);
+                    Accord.SystemTools.CopyUnmanagedMemory(_tempFrame.ImageData, _motionFrame.ImageData, _frameSize);
                     _erosionFilter.Apply(_tempFrame, _motionFrame);
                 }
 
