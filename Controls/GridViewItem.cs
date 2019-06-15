@@ -1,5 +1,4 @@
-﻿using System.Deployment.Internal;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using iSpyApplication.Sources;
 

@@ -104,8 +104,8 @@ namespace iSpyApplication.Controls
                                                       float.Parse(config[8], CultureInfo.InvariantCulture)),
                                           FillOutsideRange = Convert.ToInt32(config[9])==0,
                                           Hue = new IntRange(Convert.ToInt32(config[0]), Convert.ToInt32(config[1])),
-                                          Saturation = new Range(float.Parse(config[3], CultureInfo.InvariantCulture), float.Parse(config[4], CultureInfo.InvariantCulture)),
-                                          Luminance = new Range(float.Parse(config[6], CultureInfo.InvariantCulture), float.Parse(config[7], CultureInfo.InvariantCulture)),
+                                          Saturation = new Accord.Range(float.Parse(config[3], CultureInfo.InvariantCulture), float.Parse(config[4], CultureInfo.InvariantCulture)),
+                                          Luminance = new Accord.Range(float.Parse(config[6], CultureInfo.InvariantCulture), float.Parse(config[7], CultureInfo.InvariantCulture)),
                                           UpdateHue = Convert.ToBoolean(config[10], CultureInfo.InvariantCulture),
                                           UpdateSaturation = Convert.ToBoolean(config[11], CultureInfo.InvariantCulture),
                                           UpdateLuminance = Convert.ToBoolean(config[12], CultureInfo.InvariantCulture)

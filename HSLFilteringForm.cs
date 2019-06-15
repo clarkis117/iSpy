@@ -55,7 +55,7 @@ namespace iSpyApplication
         private Label _label7;
         private Label _label8;
         private Label _label9;
-        private Range _luminance = new Range(0, 1);
+        private Accord.Range _luminance = new Accord.Range(0, 1);
         private ColorSlider _luminanceSlider;
         private TextBox _maxHBox;
         private TextBox _maxLBox;
@@ -64,7 +64,7 @@ namespace iSpyApplication
         private TextBox _minLBox;
         private TextBox _minSBox;
         private Button _okButton;
-        private Range _saturation = new Range(0, 1);
+        private Accord.Range _saturation = new Accord.Range(0, 1);
         private ColorSlider _saturationSlider;
         private CheckBox _updateHCheck;
         private CheckBox _updateLCheck;
@@ -115,6 +115,7 @@ namespace iSpyApplication
                     lock(SyncLock)
                     {
                         var rz = new ResizeBilinear(_filterPreview.Width, _filterPreview.Height);
+                        UnmanagedImage unmanaged = new UnmanagedImage(bitmapData: value.LockBits);
                         _imageprocess = rz.Apply(value);  
                     }
                     UpdateFilter();

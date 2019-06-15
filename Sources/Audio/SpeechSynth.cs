@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Speech.Synthesis;
+//using System.Speech.Synthesis;
 using System.Threading;
 using iSpyApplication.Controls;
 using iSpyApplication.Sources.Audio.streams;
@@ -18,6 +18,7 @@ namespace iSpyApplication.Sources.Audio
         }
         private static void SynthToCam(string text, CameraWindow cw)
         {
+            /* converted to noop
             var synthFormat = new System.Speech.AudioFormat.SpeechAudioFormatInfo(System.Speech.AudioFormat.EncodingFormat.Pcm, 11025, 16, 1, 22100, 2, null);
             using (var synthesizer = new SpeechSynthesizer())
             {
@@ -68,7 +69,7 @@ namespace iSpyApplication.Sources.Audio
                     ds = null;
                 }
             }
-
+            */
 
         }
     }

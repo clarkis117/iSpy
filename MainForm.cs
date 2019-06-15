@@ -2945,7 +2945,7 @@ namespace iSpyApplication
 
         private void MenuItem21Click(object sender, EventArgs e)
         {
-            using (var ofd = new OpenFileDialog())
+            using (var ofd = new System.Windows.Forms.OpenFileDialog())
             {
                 ofd.InitialDirectory = _lastPath;
                 ofd.Filter = "iSpy Files (*.ispy)|*.ispy|XML Files (*.xml)|*.xml";

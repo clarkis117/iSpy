@@ -17,7 +17,6 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using FFmpeg.AutoGen;
 using iSpyApplication.Server;
-using NAudio.Lame;
 using NAudio.Wave;
 using iSpyApplication.Realtime;
 using iSpyApplication.Sources;
@@ -93,7 +92,7 @@ namespace iSpyApplication.Controls
 
         //private AudioStreamer _as = null;
         private WaveFormat _audioStreamFormat;
-        private LameMP3FileWriter _mp3Writer;
+        //private LameMP3FileWriter _mp3Writer;
         private readonly MemoryStream _outStream = new MemoryStream();
         
 
@@ -2247,6 +2246,7 @@ namespace iSpyApplication.Controls
                 OutSockets.RemoveAll(p => p.TcpClient.Client.Connected == false);
                 if (OutSockets.Count>0)
                 {
+                    /*
                     if (_mp3Writer == null)
                     {
                         _audioStreamFormat = new WaveFormat(Micobject.settings.samples, 16, Micobject.settings.channels);
@@ -2255,6 +2255,7 @@ namespace iSpyApplication.Controls
                     }
 
                     _mp3Writer.Write(e.RawData, 0, e.BytesRecorded);
+                    */
 
                     var bterm = Encoding.ASCII.GetBytes("\r\n");
 
@@ -2288,11 +2289,13 @@ namespace iSpyApplication.Controls
                 }
                 else
                 {
+                    /*
                     if (_mp3Writer != null)
                     {
                         _mp3Writer.Close();
                         _mp3Writer = null;
                     }
+                    */
                 }
 
 
